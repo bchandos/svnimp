@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <script defer type="text/javascript" src="/static/js/svnimp.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <title>{% block title %}{% endblock %} - SVN Imp</title>
+    {% endblock %}
+    <style>
+        #bottom-modal {
+            position: fixed;
+            left: 0;
+            bottom: -5rem;
+            height: 4em;
+            transition: bottom 500ms ease-in-out;
+            opacity: 0.9;
+        }
+        .diff-block {
+            font-family: monospace;
+            font-size: 0.75rem;
+            background-color: aliceblue;
+            padding: 1rem;
+        }
+        .diff-add {
+            background-color: rgba(144, 238, 144, 0.5)
+        }
+        .diff-remove {
+            background-color: rgba(240, 128, 128, 0.5);
+        }
+        .flex {
+            display: flex;
+        }
+        .space-between {
+            justify-content: space-between;
+        }
+        .diff-reload-btn > svg {
+            width: 1.5rem;
+        }
+
+    </style>
+</head>
+<body>
+    <header class="w3-bar w3-teal w3-padding">
+        <h1>SVN Imp</h1>
+    </header>
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer">
+        {% block footer %}
+        {% endblock %}
+    </div>
+    <div id="bottom-modal" class="w3-bar w3-teal w3-padding">
+        Here's the bottom modal!
+    </div>
+</body>
+</html>
