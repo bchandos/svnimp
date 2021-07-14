@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Info{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="w3-container">
+        <h1>Repository {{name}}</h1>
+        <div class="w3-teal w3-padding">
+            <div class="w3-row-padding">
+                <div class="w3-col m4">Root: {{repository.root}}</div>
+                <div class="w3-col m4">Last Revision: {{commit.revision}}</div>
+                <div class="w3-col m4">Revision Author: {{commit.author}}</div>
+            </div>
+        </div>
+        <ul class="w3-ul">
+            {% for f in status.target.entry %}
+                <li class="w3-padding-small">
+                    <input type="checkbox" class="w3-check path-check" name="cb-" id="" data-path="{{f.path|urlencode|replace('/', '%2F')}}">
+                    {{ f.path }}
+                    {% if f['wc-status'].item == 'modified' %}
+                        <span class="w3-round w3-teal w3-padding-small">M</span>
+                    {% elif f['wc-status'].item == 'added' %}
+                        <span class="w3-round w3-teal w3-padding-small">A</span>
+                    {% elif f['wc-status'].item == 'unversioned' %}
+                        <span class="w3-round w3-teal w3-padding-small">?</span>
+                    {% endif %}
+                    <button data-state="closed" data-repo="{{repo_id}}" data-path="{{f.path|urlencode|replace('/', '%2F')}}" class="diff-button w3-button w3-circle">&#9660;</button>
+                    <div class="diff-block hidden-diff w3-hide"></div>
+                </li>
+            {% endfor %}
+        </ul>
+        {% if status.changelist is not mapping %}
+            {% set cls = status.changelist %}
+        {% else %}
+            {% set cls = [status.changelist] %}
+        {% endif %}
+        {% for cl in cls %}
+            <h2>{{cl.name}}</h2>
+            <ul class="w3-ul">
+                {% if cl.entry is not mapping %}
+                    {% set entries = cl.entry %}
+                {% else %}
+                    {% set entries = [cl.entry] %}
+                {% endif %}
+                {% for f in entries %}
+                    <li class="w3-padding-small">
+                        <input type="checkbox" class="w3-check path-check" name="cb-" id="" data-path="{{f.path|urlencode|replace('/', '%2F')}}">
+                        {{f.path}}
+                        {% if f['wc-status'].item == 'modified' %}
+                            <span class="w3-round w3-teal w3-padding-small">M</span>
+                        {% elif f['wc-status'].item == 'added' %}
+                            <span class="w3-round w3-teal w3-padding-small">A</span>
+                        {% elif f['wc-status'].item == 'unversioned' %}
+                            <span class="w3-round w3-teal w3-padding-small">?</span>
+                        {% endif %}
+                        <button data-state="closed" data-repo="{{repo_id}}" data-path="{{f.path|urlencode|replace('/', '%2F')}}" class="diff-button w3-button w3-circle">&#9660;</button>
+                        <div class="diff-block hidden-diff w3-hide"></div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+        
+        </div>
+    </div>
+{% endblock %}
