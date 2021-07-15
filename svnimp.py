@@ -5,15 +5,13 @@ from bottle import Bottle, route, run, jinja2_view, static_file
 
 from svn import info, status, diff_file
 
+from cfg import repos
+
 bottle.debug(True)
 
 app = Bottle()
 
-repos = [
-    dict(id=1, name='eccares', path='/Users/chandos/eccares'),
-    dict(id=2, name='e3k', path='/Users/chandos/e3k'),
-    dict(id=3, name='ecparent', path='/Users/chandos/ecparent'),
-]
+
 
 def get_repo_from_id(repo_id):
     return next(x for x in repos if x['id'] == repo_id)
@@ -29,12 +27,12 @@ def svn_info():
 @jinja2_view('views/repo.html')
 def svn_info(repo_id):
     repo = get_repo_from_id(repo_id)
-    repo_path = repo['path']
+    repo_path = repo.path
     info_ = info(repo_path)
     status_ = status(repo_path)
     return dict(
-        name=repo['name'],
-        repo_id=repo['id'],
+        name=repo.name,
+        repo_id=repo.id,
         repository=info_['entry']['repository'],
         commit=info_['entry']['commit'],
         status=status_,
@@ -46,10 +44,10 @@ def svn_diff(repo_id):
     data = {k: v for k, v in bottle.request.params.items()}
     path = unquote(data.get('path'))
     repo = get_repo_from_id(repo_id)
-    repo_path = repo['path']
+    repo_path = repo.path
     return dict(
         lines=diff_file(repo_path, (path,)),
-        repo=repo['id'],
+        repo=repo.id,
         path=path,
     )
 
