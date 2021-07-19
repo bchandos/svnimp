@@ -18,16 +18,27 @@
         </div>
         <ul class="w3-ul">
             {% for f in status.target.entry %}
+            {% if f['wc-status'].item == 'modified' %}
+                {% set v_marker = 'M' %}
+                {% set v_status = 'true' %}
+            {% elif f['wc-status'].item == 'added' %}
+                {% set v_marker = 'A' %}
+                {% set v_status = 'true' %}
+            {% elif f['wc-status'].item == 'unversioned' %}
+                {% set v_marker = '?' %}
+                {% set v_status = 'false' %}
+            {% endif %}
                 <li class="w3-padding-small">
-                    <input type="checkbox" class="w3-check path-check" name="cb-" id="" data-path="{{f.path|urlencode|replace('/', '%2F')}}">
+                    <input 
+                        type="checkbox" 
+                        class="w3-check path-check" 
+                        name="cb-" 
+                        id="" 
+                        data-path="{{f.path|urlencode|replace('/', '%2F')}}"
+                        data-versioned="{{ v_status }}"
+                    >
                     {{ f.path }}
-                    {% if f['wc-status'].item == 'modified' %}
-                        <span class="w3-round w3-teal w3-padding-small">M</span>
-                    {% elif f['wc-status'].item == 'added' %}
-                        <span class="w3-round w3-teal w3-padding-small">A</span>
-                    {% elif f['wc-status'].item == 'unversioned' %}
-                        <span class="w3-round w3-teal w3-padding-small">?</span>
-                    {% endif %}
+                    <span class="w3-round w3-teal w3-padding-small">{{ v_marker }}</span>
                     <button data-state="closed" data-repo="{{repo_id}}" data-path="{{f.path|urlencode|replace('/', '%2F')}}" class="diff-button w3-button w3-circle">&#9660;</button>
                     <div class="diff-block hidden-diff w3-hide"></div>
                 </li>
@@ -47,16 +58,27 @@
                     {% set entries = [cl.entry] %}
                 {% endif %}
                 {% for f in entries %}
+                    {% if f['wc-status'].item == 'modified' %}
+                        {% set v_marker = 'M' %}
+                        {% set v_status = 'true' %}
+                    {% elif f['wc-status'].item == 'added' %}
+                        {% set v_marker = 'A' %}
+                        {% set v_status = 'true' %}
+                    {% elif f['wc-status'].item == 'unversioned' %}
+                        {% set v_marker = '?' %}
+                        {% set v_status = 'false' %}
+                    {% endif %}
                     <li class="w3-padding-small">
-                        <input type="checkbox" class="w3-check path-check" name="cb-" id="" data-path="{{f.path|urlencode|replace('/', '%2F')}}">
+                        <input 
+                            type="checkbox" 
+                            class="w3-check path-check" 
+                            name="cb-" 
+                            id="" 
+                            data-path="{{f.path|urlencode|replace('/', '%2F')}}"
+                            data-versioned="{{v_status}}"
+                        >
                         {{f.path}}
-                        {% if f['wc-status'].item == 'modified' %}
-                            <span class="w3-round w3-teal w3-padding-small">M</span>
-                        {% elif f['wc-status'].item == 'added' %}
-                            <span class="w3-round w3-teal w3-padding-small">A</span>
-                        {% elif f['wc-status'].item == 'unversioned' %}
-                            <span class="w3-round w3-teal w3-padding-small">?</span>
-                        {% endif %}
+                        <span class="w3-round w3-teal w3-padding-small">{{ v_marker }}</span>
                         <button data-state="closed" data-repo="{{repo_id}}" data-path="{{f.path|urlencode|replace('/', '%2F')}}" class="diff-button w3-button w3-circle">&#9660;</button>
                         <div class="diff-block hidden-diff w3-hide"></div>
                     </li>

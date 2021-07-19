@@ -14,6 +14,18 @@
             height: 4em;
             transition: bottom 500ms ease-in-out;
             opacity: 0.9;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        #bottom-modal-paths {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            flex-grow: 1;
+        }
+        #footer {
+            height: 6rem;
         }
         .diff-block {
             font-family: monospace;
@@ -36,6 +48,7 @@
         .diff-reload-btn > svg {
             width: 1.5rem;
         }
+        
 
     </style>
 </head>
@@ -49,7 +62,10 @@
         {% endblock %}
     </div>
     <div id="bottom-modal" class="w3-bar w3-teal w3-padding">
-        Here's the bottom modal!
+        <div id="bottom-modal-paths"></div>
+        <div id="bottom-modal-buttons">
+            <button id="bottom-modal-add-button" class="w3-button w3-sand" data-repo-id="{{ repo_id }}">Add</button>
+        </div>
     </div>
 </body>
 </html>
