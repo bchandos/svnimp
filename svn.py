@@ -52,3 +52,9 @@ def process_diffs(diff_string):
 
 def create_changelist(repo, cl_name, paths):
     run_standard_cmd(repo, ('svn', 'changelist', cl_name) + paths)
+
+def add_paths(repo, paths):
+    # Add a collection of paths to version control
+    # print(' >>>> ', repo, paths)
+    added = run_standard_cmd(repo, ('svn', 'add') + tuple(paths))
+    return [p[10:] for p in added.split('\n') if p]
