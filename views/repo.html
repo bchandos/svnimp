@@ -16,8 +16,14 @@
                 <div class="w3-col m4">Revision Author: {{commit.author}}</div>
             </div>
         </div>
+        {# This should be refactored for deduplication #}
         <ul class="w3-ul">
-            {% for f in status.target.entry %}
+            {% if status.target.entry is not mapping %}
+                {% set entries = status.target.entry %}
+            {% else %}
+                {% set entries = [status.target.entry] %}
+            {% endif %}
+            {% for f in entries %}
             {% if f['wc-status'].item == 'modified' %}
                 {% set v_marker = 'M' %}
                 {% set v_status = 'true' %}
@@ -28,7 +34,12 @@
                 {% set v_marker = '?' %}
                 {% set v_status = 'false' %}
             {% endif %}
-                <li class="w3-padding-small">
+                <li class="w3-padding-small draggable-row">
+                    {% if v_status == 'true' and cl_names %}
+                        <img src="/static/images/drag.svg" width="24" height="24" alt="drag icon" class="draggable-icon">
+                    {% else %}
+                        <div style="width: 24px; height: 24px; display: inline-block"></div>
+                    {% endif %}
                     <input 
                         type="checkbox" 
                         class="w3-check path-check" 
@@ -50,7 +61,7 @@
             {% set cls = [status.changelist] %}
         {% endif %}
         {% for cl in cls %}
-            <h2>{{cl.name}}</h2>
+            <h2 class="cl-name">{{cl.name}}</h2>
             <ul class="w3-ul">
                 {% if cl.entry is not mapping %}
                     {% set entries = cl.entry %}
@@ -68,7 +79,12 @@
                         {% set v_marker = '?' %}
                         {% set v_status = 'false' %}
                     {% endif %}
-                    <li class="w3-padding-small">
+                    <li class="w3-padding-small draggable-row" data-changelist="{{cl.name}}" draggable="true">
+                        {% if v_status == 'true' and cl_names %}
+                            <img src="/static/images/drag.svg" width="24" height="24" alt="drag icon" class="draggable-icon" draggable="false">
+                        {% else %}
+                            <div style="width: 24px; height: 24px; display: inline-block;"></div>
+                        {% endif %}
                         <input 
                             type="checkbox" 
                             class="w3-check path-check" 
@@ -76,6 +92,8 @@
                             id="" 
                             data-path="{{f.path|urlencode|replace('/', '%2F')}}"
                             data-versioned="{{v_status}}"
+                            data-changelist="{{cl.name}}"
+                            data-repo="{{repo_id}}"
                         >
                         {{f.path}}
                         <span class="w3-round w3-teal w3-padding-small">{{ v_marker }}</span>

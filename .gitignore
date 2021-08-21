@@ -130,3 +130,9 @@ dmypy.json
 
 # VS Code
 .vscode/
+
+# Mac crap
+.DS_Store
+
+# Personal config
+cfg.json

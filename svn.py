@@ -3,6 +3,7 @@ import json
 import subprocess
 import re
 import os
+from tempfile import NamedTemporaryFile
 
 import xml.etree.ElementTree as ET
 
@@ -15,7 +16,6 @@ def run_xml_cmd(repo, args):
     p = subprocess.run(newargs, stdout=subprocess.PIPE)
     d = XmlDictConfig(ET.XML(p.stdout))
     os.chdir(cwd)
-    # print(json.dumps(d, indent=1))
     return d
 
 def run_standard_cmd(repo, args):
@@ -50,11 +50,27 @@ def process_diffs(diff_string):
             start_idx = idx + 4
             return all_lines[start_idx:]
 
-def create_changelist(repo, cl_name, paths):
-    run_standard_cmd(repo, ('svn', 'changelist', cl_name) + paths)
+def add_to_changelist(repo, cl_name, paths):
+    added = run_standard_cmd(repo, ('svn', 'changelist', cl_name) + tuple(paths))
+    idx = 5 + len(cl_name)
+    return [p[idx:] for p in added.split('\n') if p]
+
+def remove_from_changelist(repo, paths):
+    removed = run_standard_cmd(repo, ('svn', 'changelist', '--remove') + tuple(paths))
+    lines = [p for p in removed.split('\n') if p]
+    m = re.search('D \[(.*)\]', lines[0])
+    cl_name = m.group(1) if m else 0
+    idx = 5 + len(cl_name)
+    return [p[idx:] for p in lines]
 
 def add_paths(repo, paths):
     # Add a collection of paths to version control
-    # print(' >>>> ', repo, paths)
     added = run_standard_cmd(repo, ('svn', 'add') + tuple(paths))
     return [p[10:] for p in added.split('\n') if p]
+
+def commit_paths(repo, paths, commit_msg):
+    with NamedTemporaryFile(mode='w+') as tmp:
+        tmp.write(commit_msg)
+        tmp.seek(0)
+        checked_in = run_standard_cmd(repo, ('svn', 'ci')  + tuple(paths) + ('--file', tmp.name))
+    
