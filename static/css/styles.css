@@ -1,0 +1,83 @@
+#side-modal {
+    position: fixed;
+    right: -31em;
+    top: 0;
+    height: 100vh;
+    width: 30em;
+    transition: right 400ms ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: -5px 0px 8px 0px rgba(0, 0, 0, 0.50);
+}
+#side-modal-paths {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    padding: 1em;
+}
+#side-modal-options {
+    display: flex;
+    flex-direction: column;
+}
+#side-modal-options > button, #side-modal-options > input {
+    margin: 0.5em 0;
+}
+#footer {
+    height: 6rem;
+}
+.diff-block {
+    font-family: monospace;
+    font-size: 0.75rem;
+    background-color: aliceblue;
+    padding: 1rem;
+    max-height: 75vh;
+    overflow: auto;
+}
+.diff-add {
+    background-color: rgba(144, 238, 144, 0.5)
+}
+.diff-remove {
+    background-color: rgba(240, 128, 128, 0.5);
+}
+.flex {
+    display: flex;
+}
+.space-between {
+    justify-content: space-between;
+}
+.diff-reload-btn > svg {
+    width: 1.5rem;
+}
+.tab {
+    text-decoration: none;
+    border-color: #d3d3d3;
+    border-style: solid;
+    border-width: 2px;
+    border-bottom: none;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    animation: background-color 500ms ease-in-out;
+}
+.tab:hover {
+    background-color: #217777!important;
+}
+.tab-active {
+    background-color: #32c3b5;
+    border-color: white;
+}
+button.tab {
+    /* Override some button-y defaults */
+    background: none;
+    color: white;
+}
+
+ul.w3-ul {
+    border: 2px solid rgba(0, 0, 0, 0);
+}
+
+ul.dragged-over {
+    border: 2px solid lightgreen;
+    border-radius: 0.5rem;
+}

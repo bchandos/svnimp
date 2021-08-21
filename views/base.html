@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <script defer type="text/javascript" src="/static/js/svnimp.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" href="/static/images/favicon.ico">
+    <title>{% block title %}{% endblock %} - SVN Imp</title>
+    {% endblock %}
+</head>
+<body>
+    <header class="w3-bar w3-teal w3-padding">
+        <h1>
+            <a href="/">SVN Imp</a>
+        </h1>
+        <div>
+            {% for repo in repos %}
+                {% if repo_id == repo.id %}
+                    <a class="w3-padding tab tab-active" href="/repo/{{repo.id}}">{{repo.name}}</a>
+                {% else %}
+                    <a class="w3-padding tab" href="/repo/{{repo.id}}">{{repo.name}}</a>
+                {% endif %}
+            {% endfor %}
+            <button id="repo-add" type="button" class="w3-padding tab">+</button>
+        </div>
+    </header>
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer">
+        {% block footer %}
+        {% endblock %}
+    </div>
+    <div id="side-modal" class="w3-indigo w3-padding">
+        <div id="side-modal-paths"></div>
+        <div id="side-modal-options">
+            <button 
+                id="side-modal-add-button" 
+                class="w3-button w3-sand w3-hide" 
+                data-repo-id="{{ repo_id }}" 
+            >
+                Add to SVN
+            </button>
+            <button 
+                id="side-modal-add-cl-button" 
+                class="w3-button w3-sand w3-hide" 
+                data-repo-id="{{ repo_id }}" 
+                data-action="add"
+                disabled
+            >
+                Add to Changelist
+            </button>
+            <input 
+                class="w3-input w3-hide" 
+                type="text" 
+                name="changelist-name" 
+                id="changelist-name" 
+                list="changelists"
+            >
+            <datalist id="changelists">
+                {% for cl_name in cl_names %}
+                    <option value="{{cl_name}}"></option>
+                {% endfor %}
+            </datalist>
+            <button 
+                id="side-modal-rm-cl-button" 
+                class="w3-button w3-sand w3-hide" 
+                data-repo-id="{{ repo_id }}"
+                data-action="remove"
+            >
+                Remove from Changelist
+            </button>
+            <button 
+                id="side-modal-ci-button" 
+                class="w3-button w3-sand w3-hide" 
+                data-repo-id="{{ repo_id }}"
+            >
+                Check-in
+            </button>
+            <textarea 
+                class="w3-hide" 
+                name="commit-message" 
+                id="commit-message" 
+                rows="5"
+            >
+            </textarea>
+        </div>
+    </div>
+    <div id="center-modal" class="w3-modal">
+        <div class="w3-modal-content w3-indigo w3-padding">
+            <span id="close-center-modal" class="w3-button w3-display-topright">&times;</span>
+            <form action="/repo/add" method="post">
+                <div class="w3-padding w3-margin">
+                    <label for="repo-name">Repository name</label>
+                    <input class="w3-input" type="text" id="repo-name" name="repo-name">
+                </div>
+                <div class="w3-padding w3-margin">
+                    <label for="repo-path">Repository path</label>
+                    <input class="w3-input" type="text" id="repo-path" name="repo-path">
+                </div>
+                <div class="w3-padding w3-margin">
+                    <button class="w3-button w3-green" type="submit">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
