@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Logs {{name}}{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="w3-container">
+        <h1>Repository {{name}} logs</h1>
+        <form action="/repo/{{repo_id}}/logs" method="get">
+            <label for="start">Start</label>
+            <select class="w3-select" style="width: 5rem;" name="start" id="start-rev" autocomplete="off">
+                {% for r in range(last_rev) %}
+                    {% if r|string == start_rev %}
+                        <option value="{{r}}" selected>{{r}}</option>
+                    {% else %}
+                        <option value="{{r}}">{{r}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <label class="w3-margin-left" for="end">End</label>
+            <select class="w3-select" style="width: 5rem;" name="end" id="end-rev" autocomplete="off">
+                <option value="head">head</option>
+                {% for r in range(last_rev, 0, -1) %}
+                    {% if r|string == end_rev %}
+                        <option value="{{r}}" selected>{{r}}</option>
+                    {% else %}
+                        <option value="{{r}}">{{r}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <button class="w3-button w3-teal w3-margin-left" type="submit">Get Logs</button>
+            <a class="w3-button w3-teal w3-margin-left" href="/repo/{{repo_id}}/logs">Clear</a>
+        </form>
+        {% for log in logs.logentry %}
+            <div class="w3-row w3-teal w3-margin-top w3-padding-small">
+                <div class="w3-col m4">Revision: {{log.revision}}</div>
+                <div class="w3-col m4">Author: {{log.author}}</div>
+                <div class="w3-col m4">Date: {{log.date|dtfmt}}</div>
+            </div>
+            <div class="w3-row">
+                <p class="w3-margin-left">{{log.msg}}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
