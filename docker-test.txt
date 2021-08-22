@@ -1,10 +1,16 @@
 docker run \
     --name my-svn-server \
     --detach \
-    --volume /Users/chandos/Documents/Miscellaneous/temp-svn:/var/opt/svn \
+    --volume /home/bill/development/svn-temp:/var/opt/svn \
     --publish 3690:3690 \
     garethflowers/svn-server
 
 docker exec -it my-svn-server svnadmin create test-repo
 
 svn co svn://localhost:3690/test-repo
+
+For setting up authorization
+
+https://stackoverflow.com/questions/2023239/subversion-authorization-failed-when-creating-repository
+
+also add '* = r' under authz
