@@ -130,6 +130,7 @@ dmypy.json
 
 # VS Code
 .vscode/
+.devcontainer/
 
 # Mac crap
 .DS_Store
