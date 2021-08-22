@@ -33,7 +33,7 @@ class XmlDictConfig(dict):
     '''
     def __init__(self, parent_element):
         
-        childrenNames = [child.tag for child in parent_element.getchildren()]
+        childrenNames = [child.tag for child in list(parent_element)]
 
         if parent_element.items(): #attributes
             self.update(dict(parent_element.items()))
