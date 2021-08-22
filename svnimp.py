@@ -1,10 +1,12 @@
+from datetime import datetime
+from dateutil import tz
 import json
 from urllib.parse import unquote
 
 import bottle
-from bottle import Bottle, route, run, jinja2_view, static_file, redirect
+from bottle import Bottle, route, run, jinja2_view, static_file, redirect, BaseTemplate
 
-from svn import info, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths
+from svn import get_logs, info, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths
 
 from cfg import repos, create_repo
 
@@ -20,7 +22,19 @@ def get_uq_paths_from_json(json_):
     paths = json_.get('paths')
     return [unquote(p) for p in paths]
 
+def dtfmt(val):
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz('Pacific/Los_Angeles')
+    t = datetime.strptime(val, '%Y-%m-%dT%H:%M:%S.%fZ')
+    t = t.replace(tzinfo=from_zone)
+    z = t.astimezone(to_zone)
+    return z.strftime('%m/%d/%Y %I:%M%p')
+
+BaseTemplate.settings.update({'filters': {'dtfmt': dtfmt}})
+
 ## END HELPER FUNCTIONS - ALL FURTHER FUNCTION MUST BE UNHELPFUL ##
+
+# HTTP Views
 @app.get('/')
 @jinja2_view('views/main.html')
 def svn_info():
@@ -28,7 +42,6 @@ def svn_info():
         repos=repos,
     )
 
-# HTTP Views
 
 @app.get('/repo/<repo_id:int>')
 @jinja2_view('views/repo.html')
@@ -51,6 +64,27 @@ def svn_info(repo_id):
         status=status_,
         cl_names=cl_names,
         repos=repos,
+    )
+
+@app.get('/repo/<repo_id:int>/logs')
+@jinja2_view('views/logs.html', filters={'dtfmt': dtfmt})
+def svn_logs(repo_id):
+    data = {k: v for k, v in bottle.request.params.items()}
+    start_rev = data.get('start', '0')
+    end_rev = data.get('end', 'head')
+    repo = get_repo_from_id(repo_id)
+    repo_path = repo.path
+    logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev)
+    info_ = info(repo_path)
+    
+    return dict(
+        name=repo.name,
+        repo_id=repo.id,
+        logs=logs,
+        repos=repos,
+        start_rev=start_rev,
+        end_rev=end_rev,
+        last_rev = int(info_['entry']['commit']['revision'])
     )
 
 # AJAX Views
@@ -100,8 +134,8 @@ def svn_cl(repo_id, action):
 @app.post('/commit/<repo_id:int>')
 def commit(repo_id):
     """ Commit some paths """
-    data = {k: v for k, v in bottle.request.params.items()}
-    uq_paths = get_uq_paths_from_json(data)
+    uq_paths = get_uq_paths_from_json(bottle.request.json)
+    data = bottle.request.json
     commit_msg = data.get('commitMessage')
     repo = get_repo_from_id(repo_id)
     processed_paths = commit_paths(repo.path, uq_paths, commit_msg)
@@ -120,6 +154,7 @@ def add_repo():
     global repos
     repos = create_repo(data.get('repo-name', ''), data.get('repo-path', ''))
     redirect(bottle.request.get_header('referer', '/'))
+
 # Static files
 
 @app.get("/static/js/<filepath:re:.*\.js>")
