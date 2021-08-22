@@ -33,6 +33,11 @@ def status(repo):
 def info(repo):
     return run_xml_cmd(repo, ('svn', 'info'))
 
+def repo_type(repo):
+    i = info(repo)
+    url = i.get('url')
+    return url.split('://')[0]
+
 def diff_file(repo, paths):
     diffs = run_standard_cmd(repo, ('svn', 'diff') + paths)
     return process_diffs(diffs)
@@ -73,4 +78,14 @@ def commit_paths(repo, paths, commit_msg):
         tmp.write(commit_msg)
         tmp.seek(0)
         checked_in = run_standard_cmd(repo, ('svn', 'ci')  + tuple(paths) + ('--file', tmp.name))
-    
+        lines = [p for p in checked_in.split('\n') if p]
+        ci_paths = list()
+        for line in lines:
+            if 'Transmitting file data' in line:
+                break
+            ci_paths.append(line[14:])
+        return ci_paths
+
+def get_logs(repo, paths=tuple(), start_rev='0', end_rev='head'):
+    # Get logs
+    return run_xml_cmd(repo, ('svn', 'log', '--verbose') + tuple(paths) + (f'-r{start_rev}:{end_rev}',))
