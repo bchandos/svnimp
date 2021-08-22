@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Info{% endblock %}
+{% block title %}Repository {{name}}{% endblock %}
 {% block head %}
     {{ super() }}
     <style type="text/css">
@@ -12,7 +12,8 @@
         <div class="w3-teal w3-padding">
             <div class="w3-row-padding">
                 <div class="w3-col m4">Root: {{repository.root}}</div>
-                <div class="w3-col m4">Last Revision: {{commit.revision}}</div>
+                <div class="w3-col m2">Last Revision: {{commit.revision}}</div>
+                <div class="w3-col m2"><a href="/repo/{{repo_id}}/logs">Logs</a></div>
                 <div class="w3-col m4">Revision Author: {{commit.author}}</div>
             </div>
         </div>
@@ -47,6 +48,7 @@
                         id="" 
                         data-path="{{f.path|urlencode|replace('/', '%2F')}}"
                         data-versioned="{{ v_status }}"
+                        autocomplete="off"
                     >
                     {{ f.path }}
                     <span class="w3-round w3-teal w3-padding-small">{{ v_marker }}</span>
@@ -94,6 +96,7 @@
                             data-versioned="{{v_status}}"
                             data-changelist="{{cl.name}}"
                             data-repo="{{repo_id}}"
+                            autocomplete="off"
                         >
                         {{f.path}}
                         <span class="w3-round w3-teal w3-padding-small">{{ v_marker }}</span>
