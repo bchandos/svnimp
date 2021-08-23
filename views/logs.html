@@ -38,10 +38,30 @@
             <div class="w3-row w3-teal w3-margin-top w3-padding-small">
                 <div class="w3-col m4">Revision: {{log.revision}}</div>
                 <div class="w3-col m4">Author: {{log.author}}</div>
-                <div class="w3-col m4">Date: {{log.date|dtfmt}}</div>
+                <div class="w3-col m3">Date: {{log.date|dtfmt}}</div>
+                <div class="w3-col m1">
+                    <button 
+                        class="w3-button w3-circle w3-small log-path-toggle" 
+                        type="button" 
+                        data-state="closed"
+                        data-rev="{{log.revision}}"
+                    >
+                        &#9660;
+                    </button>
+                </div>
             </div>
             <div class="w3-row">
                 <p class="w3-margin-left">{{log.msg}}</p>
+            </div>
+            <div id="log-paths-r{{log.revision}}" class="w3-row w3-margin-left w3-hide">
+                {% for path in log.paths.path %}
+                    <div class="w3-col w3-margin-left">
+                        {{path.text}}
+                        <span class="w3-round w3-teal w3-padding-small">
+                            {{path.action}}
+                        </span>
+                    </div>
+                {% endfor %}
             </div>
         {% endfor %}
     </div>
