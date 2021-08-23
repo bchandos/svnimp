@@ -180,12 +180,31 @@ const commit = async (e) => {
   }
 }
 
+const toggleLogFiles = (e) => {
+  const state = e.target.dataset.state;
+  const rev = e.target.dataset.rev;
+  const pathDiv = document.getElementById(`log-paths-r${rev}`);
+  if (state === 'closed') {
+    showElems(pathDiv);
+    e.target.dataset.state = 'open';
+    e.target.innerHTML = '&#9650;';
+  } else {
+    hideElems(pathDiv);
+    e.target.dataset.state = 'closed';
+    e.target.innerHTML = '&#9660;';
+  }
+}
+
 // End Event Handlers
 
 // Attach Event Listeners
 
 for (let btn of document.querySelectorAll('.diff-button')) {
   btn.addEventListener('click', getDiff);
+}
+
+for (let btn of document.querySelectorAll('.log-path-toggle')) {
+  btn.addEventListener('click', toggleLogFiles);
 }
 
 for (let block of document.querySelectorAll('.diff-block')) {
@@ -196,6 +215,7 @@ for (let ck of document.querySelectorAll('.path-check')) {
   ck.addEventListener('change', addPathToModal);
   ck.addEventListener('change', toggleVersioned);
 }
+
 
 document.getElementById('side-modal-add-button').addEventListener('click', addPaths);
 document.getElementById('side-modal-add-cl-button').addEventListener('click', clAction);
