@@ -19,12 +19,7 @@
         </div>
         {# This should be refactored for deduplication #}
         <ul class="w3-ul">
-            {% if status.target.entry is not mapping %}
-                {% set entries = status.target.entry %}
-            {% else %}
-                {% set entries = [status.target.entry] %}
-            {% endif %}
-            {% for f in entries %}
+            {% for f in status.target.entry %}
             {% if f['wc-status'].item == 'modified' %}
                 {% set v_marker = 'M' %}
                 {% set v_status = 'true' %}
@@ -57,20 +52,10 @@
                 </li>
             {% endfor %}
         </ul>
-        {% if status.changelist is not mapping %}
-            {% set cls = status.changelist %}
-        {% else %}
-            {% set cls = [status.changelist] %}
-        {% endif %}
-        {% for cl in cls %}
+        {% for cl in status.changelist %}
             <h2 class="cl-name">{{cl.name}}</h2>
             <ul class="w3-ul">
-                {% if cl.entry is not mapping %}
-                    {% set entries = cl.entry %}
-                {% else %}
-                    {% set entries = [cl.entry] %}
-                {% endif %}
-                {% for f in entries %}
+                {% for f in cl.entry %}
                     {% if f['wc-status'].item == 'modified' %}
                         {% set v_marker = 'M' %}
                         {% set v_status = 'true' %}
