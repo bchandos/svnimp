@@ -7,14 +7,18 @@ from tempfile import NamedTemporaryFile
 
 import xml.etree.ElementTree as ET
 
-from xmltodict import XmlDictConfig
+from xmltodict import pluralize_dict_key, xml_to_dict
 
-def run_xml_cmd(repo, args):
+def run_xml_cmd(repo, args, list_elems=tuple()):
     cwd = os.getcwd()
     os.chdir(repo)
     newargs = args + ('--xml',)
+    # Elements that we always want to be list/array type, 
+    # regardless of how many child elements they have
     p = subprocess.run(newargs, stdout=subprocess.PIPE)
-    d = XmlDictConfig(ET.XML(p.stdout))
+    d = xml_to_dict(ET.XML(p.stdout))
+    for elem in list_elems:
+        d = pluralize_dict_key(d, elem)
     os.chdir(cwd)
     return d
 
@@ -28,10 +32,10 @@ def run_standard_cmd(repo, args):
     return res.decode('utf-8')
 
 def status(repo):
-    return run_xml_cmd(repo, ('svn', 'status'))
+    return run_xml_cmd(repo, ('svn', 'status'), list_elems=('changelist', 'entry'))['status']
 
 def info(repo):
-    return run_xml_cmd(repo, ('svn', 'info'))
+    return run_xml_cmd(repo, ('svn', 'info'))['info']
 
 def repo_type(repo):
     i = info(repo)
@@ -88,4 +92,8 @@ def commit_paths(repo, paths, commit_msg):
 
 def get_logs(repo, paths=tuple(), start_rev='0', end_rev='head'):
     # Get logs
-    return run_xml_cmd(repo, ('svn', 'log', '--verbose') + tuple(paths) + (f'-r{start_rev}:{end_rev}',))
+    return run_xml_cmd(
+        repo, 
+        ('svn', 'log', '--verbose') + tuple(paths) + (f'-r{start_rev}:{end_rev}',),
+        list_elems=('path',)
+    )['log']
