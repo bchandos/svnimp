@@ -72,7 +72,7 @@ def svn_logs(repo_id):
     data = {k: v for k, v in bottle.request.params.items()}
     repo = get_repo_from_id(repo_id)
     repo_path = repo.path
-    update(repo_path)
+    # update(repo_path)
     info_ = info(repo_path)
     last_rev = int(info_['entry']['commit']['revision'])
     offset = 20 if last_rev > 20 else last_rev
