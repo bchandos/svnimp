@@ -95,3 +95,7 @@ def get_logs(repo, paths=tuple(), start_rev='0', end_rev='head'):
         ('svn', 'log', '--verbose') + tuple(paths) + (f'-r{start_rev}:{end_rev}',),
         list_elems=('path',)
     )['log']
+
+def update(repo):
+    # Update the repo, ignoring output
+    run_standard_cmd(repo, ('svn', 'up'))

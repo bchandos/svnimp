@@ -6,7 +6,7 @@ from urllib.parse import unquote
 import bottle
 from bottle import Bottle, route, run, jinja2_view, static_file, redirect, BaseTemplate
 
-from svn import get_logs, info, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths
+from svn import get_logs, info, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths, update
 
 from cfg import repos, create_repo
 
@@ -67,15 +67,18 @@ def svn_info(repo_id):
     )
 
 @app.get('/repo/<repo_id:int>/logs')
-@jinja2_view('views/logs.html', filters={'dtfmt': dtfmt})
+@jinja2_view('views/logs.html')
 def svn_logs(repo_id):
     data = {k: v for k, v in bottle.request.params.items()}
-    start_rev = data.get('start', '0')
-    end_rev = data.get('end', 'head')
     repo = get_repo_from_id(repo_id)
     repo_path = repo.path
-    logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev)
+    update(repo_path)
     info_ = info(repo_path)
+    last_rev = int(info_['entry']['commit']['revision'])
+    offset = 20 if last_rev > 20 else last_rev
+    start_rev = data.get('start', str(last_rev - offset))
+    end_rev = data.get('end', 'head')
+    logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev)
     
     return dict(
         name=repo.name,
@@ -84,7 +87,7 @@ def svn_logs(repo_id):
         repos=repos,
         start_rev=start_rev,
         end_rev=end_rev,
-        last_rev = int(info_['entry']['commit']['revision'])
+        last_rev=last_rev,
     )
 
 # AJAX Views
@@ -152,7 +155,19 @@ def add_repo():
     """ Create a new repo """
     data = {k: v for k, v in bottle.request.params.items()}
     global repos
-    repos = create_repo(data.get('repo-name', ''), data.get('repo-path', ''))
+    repos = create_repo(
+        data.get('repo-name', ''), 
+        data.get('repo-path', ''),
+        int(data.get('repo-cache-logs') == 'on')
+    )
+    redirect(bottle.request.get_header('referer', '/'))
+
+@app.get('/update/<repo_id:int>')
+def update_repo(repo_id):
+    """ Update a repo """
+    repo = get_repo_from_id(repo_id)
+    update(repo.path)
+
     redirect(bottle.request.get_header('referer', '/'))
 
 # Static files
