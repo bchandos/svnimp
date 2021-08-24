@@ -1,5 +1,3 @@
-from collections import defaultdict
-import json
 import subprocess
 import re
 import os
