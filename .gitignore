@@ -136,4 +136,4 @@ dmypy.json
 .DS_Store
 
 # Personal config
-cfg.json
+db.sqlite
