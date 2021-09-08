@@ -18,6 +18,8 @@ const getDiff = async (e) => {
     hiddenEl.classList.add('w3-hide');
     btnEl.dataset.state = 'closed';
   }
+  createPoppers();
+  setShowAllBtnState();
 }
 
 const reloadDiff = async (e) => {
@@ -195,6 +197,30 @@ const toggleLogFiles = (e) => {
   }
 }
 
+const showAllCLDiffs = (e) => {
+  const thisBtn = e.currentTarget 
+  const clName = thisBtn.dataset.changelist;
+  const allDiffBtns = document.querySelectorAll(`li[data-changelist="${clName}"] button.diff-button[data-state="${thisBtn.dataset.state}"]`)
+  for (btn of allDiffBtns) {
+    btn.click();
+  }
+  setShowAllBtnState();
+}
+
+const toggleChangelist = (e) => {
+  const clName = e.currentTarget.dataset.changelist;
+  const clBlock = document.querySelector(`ul[data-changelist="${clName}"]`);
+  if (e.currentTarget.dataset.state === 'open') {
+    clBlock.style.display = 'none';
+    e.currentTarget.dataset.state = 'closed';
+    e.currentTarget.innerHTML = '&#9660;'
+  } else {
+    clBlock.style.display = 'block';
+    e.currentTarget.dataset.state = 'open';
+    e.currentTarget.innerHTML = '&#9650;'
+  }
+}
+
 // End Event Handlers
 
 // Attach Event Listeners
@@ -203,8 +229,16 @@ for (let btn of document.querySelectorAll('.diff-button')) {
   btn.addEventListener('click', getDiff);
 }
 
+for (let btn of document.querySelectorAll('.cl-button')) {
+  btn.addEventListener('click', toggleChangelist);
+}
+
 for (let btn of document.querySelectorAll('.log-path-toggle')) {
   btn.addEventListener('click', toggleLogFiles);
+}
+
+for (let btn of document.querySelectorAll('.cl-diff-expand')) {
+  btn.addEventListener('click', showAllCLDiffs);
 }
 
 for (let block of document.querySelectorAll('.diff-block')) {
@@ -282,20 +316,21 @@ const setModalButtonState = (ckdBoxes) => {
   }
 }
 
-const addOptionsToClDatalist = () => {
-  // Add any existing changelist names to the datalist under the changelist name input
-  // Done via Javascript because the input and datalist element are in the base template
-  // which either can't access the variables passed into the inner template (untested)
-  // or because the data structure is too annoying to deal with
-  const dl = document.querySelector('datalist#changelists');
-  for (let n of Array.from(document.querySelectorAll('h2.cl-name'))) {
-    const opt = document.createElement('option');
-    opt.value = n.innerHTML;
-    dl.appendChild(opt);
+const setShowAllBtnState = () => {
+  const showAllBtns = document.querySelectorAll('button.cl-diff-expand');
+  for (let thisBtn of showAllBtns) {
+    const subBtns = Array.from(document.querySelectorAll(`li[data-changelist="${thisBtn.dataset.changelist}"] button.diff-button`));
+    
+    if (subBtns.some(b => b.dataset.state === 'open')) {
+      thisBtn.innerHTML = 'Hide all diffs';
+      thisBtn.dataset.state = 'open';
+    } else {
+      thisBtn.innerHTML = 'Show all diffs';
+      thisBtn.dataset.state = 'closed';
+    }
+
   }
 }
-addOptionsToClDatalist();
-
 
 // Drag and drop
 

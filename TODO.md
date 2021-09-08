@@ -1,0 +1,17 @@
+- [x] Changelist sorting stability
+- [x] Changelist show all diff button
+- [ ] Poppers overflow issue
+- [ ] Save diff to patch
+- [ ] Save changelist diff to patch
+- [ ] Changelist hiding
+- [ ] Firefox drag and drop doesn't work - loads icon instead...
+- [ ] Confirm "Enter" on changelist input will submit the correct form (it does not)
+- [ ] Add notes to individual files or changelist (files could be propset, but not changelists)
+- [x] Make it generally more compact
+- [x] Create arrowbox like element for various dialogs / etc
+- [ ] Make arrowbox look nicer and be smarter
+- [ ] Escape HTML in logs
+- [ ] Respect line breaks in logs
+- [ ] Debug check-in and add to changelist not returning successfully
+- [ ] Support "D" attribute on elements and test Deleted files
+- [ ] ESC should close side panel, deselecting all

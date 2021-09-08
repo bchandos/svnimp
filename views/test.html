@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Test Page{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script defer type="text/javascript" src="/static/js/poppers.js"></script>
+    <link rel="stylesheet" href="/static/css/poppers.css" />
+
+{% endblock %}
+{% block content %}
+    <div class="w3-container">
+        <popper class="" data-trigger-text="Left" data-position="left">
+            <p>
+                Here is some text that should be inside the popbox.
+                What if I make it longer now.
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et officiis, reiciendis perspiciatis omnis sunt eius rem, magnam quos deleniti eaque voluptatibus repellat, qui animi obcaecati. Reiciendis animi enim ipsum quod.
+            </p>
+            <span style="color: red">Here's a red span</span>
+            <em>And italicized text</em>
+        </popper>
+        <popper class="" data-trigger-text="Right" data-position="right">
+            <p>
+                Here is some text that should be inside the popbox.
+                What if I make it longer now.
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et officiis, reiciendis perspiciatis omnis sunt eius rem, magnam quos deleniti eaque voluptatibus repellat, qui animi obcaecati. Reiciendis animi enim ipsum quod.
+            </p>
+            <span style="color: red">Here's a red span</span>
+            <em>And italicized text</em>
+        </popper>
+        <popper class="" data-trigger-text="Top" data-position="top">
+            <p>
+                Here is some text that should be inside the popbox.
+                What if I make it longer now.
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et officiis, reiciendis perspiciatis omnis sunt eius rem, magnam quos deleniti eaque voluptatibus repellat, qui animi obcaecati. Reiciendis animi enim ipsum quod.
+            </p>
+            <span style="color: red">Here's a red span</span>
+            <em>And italicized text</em>
+        </popper>
+        <popper class="" data-trigger-text="Bottom" data-position="bottom">
+            <p>
+                Here is some text that should be inside the popbox.
+                What if I make it longer now.
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et officiis, reiciendis perspiciatis omnis sunt eius rem, magnam quos deleniti eaque voluptatibus repellat, qui animi obcaecati. Reiciendis animi enim ipsum quod.
+            </p>
+            <span style="color: red">Here's a red span</span>
+            <em>And italicized text</em>
+        </popper>
+        <popper class="" data-trigger-text="Top" data-position="top">
+            <p>
+                Here is some text that should be inside the popbox.
+                What if I make it longer now.
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Et officiis, reiciendis perspiciatis omnis sunt eius rem, magnam quos deleniti eaque voluptatibus repellat, qui animi obcaecati. Reiciendis animi enim ipsum quod.
+            </p>
+            <span style="color: red">Here's a red span</span>
+            <em>And italicized text</em>
+        </popper>
+        <p>Just some regular content outside the box.</p>
+    </div>
+{% endblock %}

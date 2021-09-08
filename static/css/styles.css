@@ -1,3 +1,8 @@
+html, body {
+    font-size: 14px;
+    line-height: 1.2;
+}
+
 #side-modal {
     position: fixed;
     right: -31em;
@@ -80,4 +85,8 @@ ul.w3-ul {
 ul.dragged-over {
     border: 2px solid lightgreen;
     border-radius: 0.5rem;
+}
+
+.padding-none {
+    padding: 0;
 }

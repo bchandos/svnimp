@@ -1,0 +1,118 @@
+div.popper {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    padding: 1rem;
+    border: 2px solid brown;
+    border-radius: 0.5rem;
+    background-color: aliceblue;
+    width: 30rem;
+    transition: opacity 225ms ease-in-out;
+}
+
+
+div.popper:after, div.popper:before {
+	border: solid transparent;
+	content: "";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+div.popper.pos-left:after, div.popper.pos-left:before, 
+div.popper.pos-right:after, div.popper.pos-right:before {
+    --m-top-offset: 0px;
+    --left-offset: 0px;
+    top: 50%;
+}
+div.popper.pos-top:after, div.popper.pos-top:before, 
+div.popper.pos-bottom:after, div.popper.pos-bottom:before {
+    
+    --left-offset: 3px;
+    left: 50%;
+}
+
+div.popper.pos-left:after, div.popper.pos-left:before {
+    left: 100%;
+}
+
+div.popper.pos-right:after, div.popper.pos-right:before {
+    right: 100%;
+}
+
+div.popper.pos-top:after, div.popper.pos-top:before {
+    --m-top-offset: -8px;
+    top: 100%;
+}
+
+div.popper.pos-bottom:after, div.popper.pos-bottom:before {
+    --m-top-offset: 8px;
+    bottom: 100%;
+}
+
+div.popper:before {
+    border-color: rgba(194, 225, 245, 0);
+	border-width: 8px;
+	margin-top: calc(-8px - var(--m-top-offset));
+}
+
+div.popper:after {
+    border-color: rgba(0, 0, 0, 0);
+    border-width: 5px;
+    margin-top: calc(-5px - var(--m-top-offset));
+}
+
+div.popper.pos-left:after {
+    border-left-color: aliceblue;
+}
+div.popper.pos-left:before {
+    border-left-color: brown;
+}
+
+div.popper.pos-right:after {
+    border-right-color: aliceblue;
+}
+div.popper.pos-right:before {
+    border-right-color: brown;
+}
+
+div.popper.pos-top:after {
+    border-top-color: aliceblue;
+    --m-top-offset: -5px;
+    left: calc(50% + var(--left-offset));
+}
+div.popper.pos-top:before {
+    border-top-color: brown;
+}
+div.popper.pos-bottom:after {
+    border-bottom-color: aliceblue;
+    left: calc(50% + var(--left-offset));
+}
+div.popper.pos-bottom:before {
+    border-bottom-color: brown;
+}
+
+div#popper-backdrop {
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-color: rgba(0,0,0,0.2);
+    transition: opacity 225ms ease-in-out;
+}
+
+button.popper-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.popper-box {
+    position: relative;
+}

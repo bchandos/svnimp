@@ -32,7 +32,7 @@ def dtfmt(val):
 
 BaseTemplate.settings.update({'filters': {'dtfmt': dtfmt}})
 
-## END HELPER FUNCTIONS - ALL FURTHER FUNCTION MUST BE UNHELPFUL ##
+## END HELPER FUNCTIONS - ALL FURTHER FUNCTIONS MUST BE UNHELPFUL ##
 
 # HTTP Views
 @app.get('/')
@@ -183,5 +183,19 @@ def images(filepath):
 @app.get("/static/css/<filepath:re:(.*\.css)>")
 def images(filepath):
     return static_file(filepath, root="static/css")
+
+# Testing
+
+@app.get('/test-page')
+@jinja2_view('views/test.html')
+def test_page():
+    """ A test page, obvi """
+    return dict(
+        repos=repos,
+    )
+
+
+
+# Run the Application
 
 run(app, host='localhost', port=4444)

@@ -1,10 +1,15 @@
 <div class="flex space-between">
     <div></div>
-    <button data-repo="{{repo}}" data-path="{{path|urlencode|replace('/', '%2F')}}" class="diff-reload-btn w3-button w3-circle" style="padding: 0;">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-    </button>
+    <div>
+        <popper data-trigger-text="Save to Patch" data-position="bottom">
+            <div>A form for saving a diff will go here.</div>
+        </popper>
+        <button data-repo="{{repo}}" data-path="{{path|urlencode|replace('/', '%2F')}}" class="diff-reload-btn w3-button w3-circle" style="padding: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+        </button>
+    </div>
 </div>
 {% if lines %}
     {% for line in lines %}

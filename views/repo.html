@@ -33,7 +33,7 @@
                 {% set v_marker = '?' %}
                 {% set v_status = 'false' %}
             {% endif %}
-                <li class="w3-padding-small draggable-row">
+                <li class="padding-none draggable-row">
                     {% if v_status == 'true' and cl_names %}
                         <img src="/static/images/drag.svg" width="24" height="24" alt="drag icon" class="draggable-icon">
                     {% else %}
@@ -55,9 +55,15 @@
                 </li>
             {% endfor %}
         </ul>
-        {% for cl in status.changelist %}
-            <h2 class="cl-name">{{cl.name}}</h2>
-            <ul class="w3-ul">
+        {% for cl in status.changelist|sort(attribute='name') %}
+            <h2 class="cl-name">
+                <button data-state="open" data-changelist="{{cl.name}}" class="cl-button w3-button padding-none">
+                    &#9650;
+                </button>
+                {{cl.name}}
+                <button type="button" class="w3-light-gray w3-medium w3-button cl-diff-expand" data-changelist="{{cl.name}}" data-state="closed">Show all diffs</button>
+            </h2>
+            <ul class="w3-ul" data-changelist="{{cl.name}}">
                 {% for f in cl.entry %}
                     {% if f['wc-status'].item == 'modified' %}
                         {% set v_marker = 'M' %}
@@ -69,7 +75,7 @@
                         {% set v_marker = '?' %}
                         {% set v_status = 'false' %}
                     {% endif %}
-                    <li class="w3-padding-small draggable-row" data-changelist="{{cl.name}}" draggable="true">
+                    <li class="padding-none draggable-row" data-changelist="{{cl.name}}" draggable="true">
                         {% if v_status == 'true' and cl_names %}
                             <img src="/static/images/drag.svg" width="24" height="24" alt="drag icon" class="draggable-icon" draggable="false">
                         {% else %}

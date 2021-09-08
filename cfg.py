@@ -3,8 +3,6 @@ import sqlite3
 
 import aiosql
 
-
-
 queries = aiosql.from_path('sql/repos.sql', 'sqlite3')
 
 Repo = namedtuple('Repo', ['id', 'name', 'path'])
