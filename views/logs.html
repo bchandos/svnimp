@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="w3-row">
-                <p class="w3-margin-left">{{log.msg}}</p>
+                <p class="w3-margin-left" style="white-space: pre;">{{log.msg|escape}}</p>
             </div>
             <div id="log-paths-r{{log.revision}}" class="w3-row w3-margin-left w3-hide">
                 {% for path in log.paths.path %}

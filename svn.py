@@ -85,7 +85,8 @@ def commit_paths(repo, paths, commit_msg):
         for line in lines:
             if 'Transmitting file data' in line:
                 break
-            ci_paths.append(line[14:])
+            ci_paths.append(line[14:].strip())
+        print('>>>>', ci_paths)
         return ci_paths
 
 def get_logs(repo, paths=tuple(), start_rev='0', end_rev='head'):

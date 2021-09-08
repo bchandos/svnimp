@@ -10,8 +10,9 @@
 - [x] Make it generally more compact
 - [x] Create arrowbox like element for various dialogs / etc
 - [ ] Make arrowbox look nicer and be smarter
-- [ ] Escape HTML in logs
-- [ ] Respect line breaks in logs
+- [x] Escape HTML in logs
+- [x] Respect line breaks in logs
 - [ ] Debug check-in and add to changelist not returning successfully
 - [ ] Support "D" attribute on elements and test Deleted files
 - [ ] ESC should close side panel, deselecting all
+- [ ] Add messaging banner
