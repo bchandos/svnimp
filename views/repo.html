@@ -33,9 +33,9 @@
                 {% set v_marker = '?' %}
                 {% set v_status = 'false' %}
             {% endif %}
-                <li class="padding-none draggable-row">
+                <li class="padding-none draggable-row" draggable="{{(v_marker != '?')|lower}}">
                     {% if v_status == 'true' and cl_names %}
-                        <img src="/static/images/drag.svg" width="24" height="24" alt="drag icon" class="draggable-icon">
+                        <img src="/static/images/drag.svg" width="24" height="24" alt="drag icon" class="draggable-icon" draggable="false">
                     {% else %}
                         <div style="width: 24px; height: 24px; display: inline-block"></div>
                     {% endif %}
@@ -46,6 +46,7 @@
                         id="" 
                         data-path="{{f.path|urlencode|replace('/', '%2F')}}"
                         data-versioned="{{ v_status }}"
+                        data-repo="{{repo_id}}"
                         autocomplete="off"
                     >
                     {{ f.path }}
