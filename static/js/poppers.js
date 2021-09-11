@@ -75,29 +75,32 @@ const zPopBack = (e) => {
 const openPopper = (e) => {
     const popper = e.currentTarget.nextSibling;
     const pBox = e.currentTarget;
+    popper.style.display = 'block';
+    console.log(popper.style);
     let fit = popperFit(popper.dataset.position, popper, pBox);
+    console.log(popper.style);
     popper.style.top = `${fit.pTop}px`;
     popper.style.left = `${fit.pLeft}px`;
     const pRect = popper.getBoundingClientRect();
     // If the popper is going to render offscreen, find another location for it.
     // This will only handle a single case, and should handle all cases...
     if (pRect.x < 0) {
-        popper.style = null;
+        popper.style.top, popper.style.left = null;
         fit = popperFit('right', popper, pBox);
         popper.style.top = `${fit.pTop}px`;
         popper.style.left = `${fit.pLeft}px`;
     } else if ((pRect.x + pRect.width) > document.documentElement.clientWidth) {
-        popper.style = null;
+        popper.style.top, popper.style.left = null;
         fit = popperFit('left', popper, pBox);
         popper.style.top = `${fit.pTop}px`;
         popper.style.left = `${fit.pLeft}px`;
     } else if (pRect.y < 0) {
-        popper.style = null;
+        popper.style.top, popper.style.left = null;
         fit = popperFit('bottom', popper, pBox);
         popper.style.top = `${fit.pTop}px`;
         popper.style.left = `${fit.pLeft}px`;
     } else if ((pRect.y + pRect.height) > document.documentElement.clientHeight) {
-        popper.style = null;
+        popper.style.top, popper.style.left = null;
         fit = popperFit('top', popper, pBox);
         popper.style.top = `${fit.pTop}px`;
         popper.style.left = `${fit.pLeft}px`;

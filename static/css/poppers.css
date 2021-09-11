@@ -1,4 +1,5 @@
 div.popper {
+    display: none;
     opacity: 0;
     position: absolute;
     top: 0;
@@ -10,6 +11,7 @@ div.popper {
     background-color: aliceblue;
     width: 30rem;
     transition: opacity 225ms ease-in-out;
+    box-shadow: 5px 5px 5px -1px rgba(0,0,0,0.5);
 }
 
 
