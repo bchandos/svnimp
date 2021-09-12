@@ -51,7 +51,7 @@
                     >
                     {{ f.path }}
                     <span class="w3-round w3-teal w3-padding-small">{{ v_marker }}</span>
-                    <button data-state="closed" data-repo="{{repo_id}}" data-path="{{f.path|urlencode|replace('/', '%2F')}}" class="diff-button w3-button w3-circle">&#9660;</button>
+                    <button data-state="closed" data-repo="{{repo_id}}" data-path="{{f.path|urlencode|replace('/', '%2F')}}" class="diff-button w3-button w3-circle">&#9654;</button>
                     <div class="diff-block hidden-diff w3-hide"></div>
                 </li>
             {% endfor %}
@@ -59,7 +59,7 @@
         {% for cl in status.changelist|sort(attribute='name') %}
             <h2 class="cl-name">
                 <button data-state="open" data-changelist="{{cl.name}}" class="cl-button w3-button padding-none">
-                    &#9650;
+                    &#9660;
                 </button>
                 {{cl.name}}
                 <button type="button" class="w3-light-gray w3-medium w3-button cl-diff-expand" data-changelist="{{cl.name}}" data-state="closed">Show all diffs</button>
@@ -95,7 +95,7 @@
                         >
                         {{f.path}}
                         <span class="w3-round w3-teal w3-padding-small">{{ v_marker }}</span>
-                        <button data-state="closed" data-repo="{{repo_id}}" data-path="{{f.path|urlencode|replace('/', '%2F')}}" class="diff-button w3-button w3-circle">&#9660;</button>
+                        <button data-state="closed" data-repo="{{repo_id}}" data-path="{{f.path|urlencode|replace('/', '%2F')}}" class="diff-button w3-button w3-circle">&#9654;</button>
                         <div class="diff-block hidden-diff w3-hide"></div>
                     </li>
                 {% endfor %}
