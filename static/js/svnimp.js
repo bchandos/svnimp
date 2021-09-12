@@ -11,10 +11,10 @@ const getDiff = async (e) => {
       hiddenEl.innerHTML = await diffRequest(repo, path);
     }
     hiddenEl.classList.remove('w3-hide');
-    btnEl.innerHTML = '&#9650;';
+    btnEl.innerHTML = '&#9660;';
     btnEl.dataset.state = 'open';
   } else {
-    btnEl.innerHTML = '&#9660;';
+    btnEl.innerHTML = '&#9654;';
     hiddenEl.classList.add('w3-hide');
     btnEl.dataset.state = 'closed';
   }
@@ -52,6 +52,7 @@ const addPathToModal = (e) => {
   const ckdBoxes = document.querySelectorAll('.path-check:checked');
   // Display or hide the bottom modal panel
   if (ckdBoxes.length) {
+    sideModal.dataset.state = 'open';
     sideModal.style.right = 0;
     const pathArray = Array.from(ckdBoxes).map(
         c => decodeURIComponent(c.dataset.path)
@@ -61,9 +62,21 @@ const addPathToModal = (e) => {
       pathContainer.innerHTML += `<div class="path-flex-item">${p}</div>`
     }
     setModalButtonState(ckdBoxes);
+    document.addEventListener('keyup', closeModal);
   } else {
+    sideModal.dataset.state = 'closed';
     sideModal.style.right = '-31em';
     pathContainer.innerHTML = '';
+    document.removeEventListener('keyup', closeModal);
+  }
+}
+
+const closeModal = (e) => {
+  if (e.key === 'Escape') {
+    const ckdBoxes = document.querySelectorAll('.path-check:checked');
+    for (let ckdBox of ckdBoxes) {
+      ckdBox.click();
+    }
   }
 }
 
@@ -189,11 +202,11 @@ const toggleLogFiles = (e) => {
   if (state === 'closed') {
     showElems(pathDiv);
     e.target.dataset.state = 'open';
-    e.target.innerHTML = '&#9650;';
+    e.target.innerHTML = '&#9660;';
   } else {
     hideElems(pathDiv);
     e.target.dataset.state = 'closed';
-    e.target.innerHTML = '&#9660;';
+    e.target.innerHTML = '&#9654;';
   }
 }
 
@@ -213,11 +226,11 @@ const toggleChangelist = (e) => {
   if (e.currentTarget.dataset.state === 'open') {
     clBlock.style.display = 'none';
     e.currentTarget.dataset.state = 'closed';
-    e.currentTarget.innerHTML = '&#9660;'
+    e.currentTarget.innerHTML = '&#9654;'
   } else {
     clBlock.style.display = 'block';
     e.currentTarget.dataset.state = 'open';
-    e.currentTarget.innerHTML = '&#9650;'
+    e.currentTarget.innerHTML = '&#9660;'
   }
 }
 
@@ -328,9 +341,25 @@ const setShowAllBtnState = () => {
       thisBtn.innerHTML = 'Show all diffs';
       thisBtn.dataset.state = 'closed';
     }
-
   }
 }
+
+const waitingForAjax = () => {
+  // All visible input elements should be disabled during an AJAX request
+  // to prevent double-submits and other confusing behavior
+  for (let i of document.querySelectorAll('input, textarea, button')) {
+    i.disabled = true;
+  }
+}
+
+const clearWait = () => {
+  // All visible input elements should be disabled during an AJAX request
+  // to prevent double-submits and other confusing behavior
+  for (let i of document.querySelectorAll('input, textarea, button')) {
+    i.disabled = false;
+  }
+}
+
 
 // Drag and drop
 
