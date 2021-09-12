@@ -13,7 +13,7 @@
             <label for="start">Start</label>
             <select class="w3-select" style="width: 5rem;" name="start" id="start-rev" autocomplete="off">
                 {% for r in range(last_rev) %}
-                    {% if r|string == start_rev %}
+                    {% if r == start_rev %}
                         <option value="{{r}}" selected>{{r}}</option>
                     {% else %}
                         <option value="{{r}}">{{r}}</option>
@@ -21,10 +21,11 @@
                 {% endfor %}
             </select>
             <label class="w3-margin-left" for="end">End</label>
-            <select class="w3-select" style="width: 5rem;" name="end" id="end-rev" autocomplete="off">
-                <option value="head">head</option>
+            <select class="w3-select" style="width: 7rem;" name="end" id="end-rev" autocomplete="off">
                 {% for r in range(last_rev, 0, -1) %}
-                    {% if r|string == end_rev %}
+                    {% if loop.first %}
+                        <option value="{{r}}">{{r}} (head)</option>
+                    {% elif r == end_rev %}
                         <option value="{{r}}" selected>{{r}}</option>
                     {% else %}
                         <option value="{{r}}">{{r}}</option>
@@ -34,7 +35,7 @@
             <button class="w3-button w3-teal w3-margin-left" type="submit">Get Logs</button>
             <a class="w3-button w3-teal w3-margin-left" href="/repo/{{repo_id}}/logs">Clear</a>
         </form>
-        {% for log in logs.logentry %}
+        {% for log in logs %}
             <div class="w3-row w3-teal w3-margin-top w3-padding-small">
                 <div class="w3-col m4">Revision: {{log.revision}}</div>
                 <div class="w3-col m4">Author: {{log.author}}</div>
@@ -46,7 +47,7 @@
                         data-state="closed"
                         data-rev="{{log.revision}}"
                     >
-                        &#9660;
+                        &#9654;
                     </button>
                 </div>
             </div>

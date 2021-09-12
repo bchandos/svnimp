@@ -86,17 +86,26 @@ def commit_paths(repo, paths, commit_msg):
             if 'Transmitting file data' in line:
                 break
             ci_paths.append(line[14:].strip())
-        print('>>>>', ci_paths)
         return ci_paths
 
-def get_logs(repo, paths=tuple(), start_rev='0', end_rev='head'):
-    # Get logs
+def get_logs(repo, start_rev, end_rev, paths=tuple()):
+    # Get logs from SVN
     return run_xml_cmd(
         repo, 
         ('svn', 'log', '--verbose') + tuple(paths) + (f'-r{start_rev}:{end_rev}',),
         list_elems=('path',)
-    )['log']
+    )['log']['logentry']
 
 def update(repo):
     # Update the repo, ignoring output
     run_standard_cmd(repo, ('svn', 'up'))
+
+def get_head_revision(repo):
+    # Get the true head revision number by parsing svnversion
+    args = ('svnversion',)
+    cwd = os.getcwd()
+    os.chdir(repo)
+    p = subprocess.run(args, stdout=subprocess.PIPE)
+    res = p.stdout.decode('utf-8')
+    os.chdir(cwd)
+    return int(res.split(':')[1].strip().replace('M',''))

@@ -6,9 +6,9 @@ from urllib.parse import unquote
 import bottle
 from bottle import Bottle, route, run, jinja2_view, static_file, redirect, BaseTemplate
 
-from svn import get_logs, info, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths, update
+from svn import get_head_revision, get_logs, info, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths, update
 
-from cfg import repos, create_repo
+from cfg import cache_log, repos, create_repo, get_cached_logs
 
 bottle.debug(True)
 
@@ -72,14 +72,26 @@ def svn_logs(repo_id):
     data = {k: v for k, v in bottle.request.params.items()}
     repo = get_repo_from_id(repo_id)
     repo_path = repo.path
-    # update(repo_path)
-    info_ = info(repo_path)
-    last_rev = int(info_['entry']['commit']['revision'])
+    last_rev = get_head_revision(repo_path)
     offset = 20 if last_rev > 20 else last_rev
-    start_rev = data.get('start', str(last_rev - offset))
-    end_rev = data.get('end', 'head')
-    logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev)
+    start_rev = int(data.get('start', str(last_rev - offset)))
+    end_rev = int(data.get('end', last_rev))
     
+    if repo.cache_logs:
+        cached_logs = get_cached_logs(repo.id, start_rev, end_rev)
+        revs_from_cache = {int(l['revision']) for l in cached_logs}
+        if revs_from_cache == set(range(start_rev, end_rev + 1)):
+            live_logs = list()
+        else:
+            live_logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev)
+            cached_logs = list()
+            for log in live_logs:
+                cache_log(repo.id, int(log['revision']), json.dumps(log))
+    else:
+        live_logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev)
+        cached_logs = list()
+
+    logs = cached_logs + live_logs
     return dict(
         name=repo.name,
         repo_id=repo.id,

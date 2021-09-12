@@ -1,11 +1,11 @@
 -- name: get_all_repos
 -- Get all repositories
-select id, name, path
+select id, name, path, cache_logs
 from repos;
 
 -- name: get_repo_by_id^
 -- Get repo by id
-select id, name, path
+select id, name, path, cache_logs
 from repos
 where id = :id;
 

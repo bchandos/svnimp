@@ -9,8 +9,16 @@ create table if not exists repos (
 create table if not exists logs (
     id integer not null primary key,
     repo_id integer not null,
-    revision text not null,
-    message blob not null,
-    paths blob not null,
+    revision integer not null,
+    log_entry blob not null,
+    foreign key(repo_id) references repos(id),
+    unique(repo_id, revision)
+);
+
+create table if not exists notes (
+    id integer not null primary key,
+    repo_id integer not null,
+    changelist_name text,
+    path_name text,
     foreign key(repo_id) references repos(id)
 );
