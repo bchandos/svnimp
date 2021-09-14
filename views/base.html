@@ -7,11 +7,17 @@
     <link rel="stylesheet" href="/static/css/styles.css">
     <script defer type="text/javascript" src="/static/js/poppers.js"></script>
     <link rel="stylesheet" href="/static/css/poppers.css" />
+    <script defer type="text/javascript" src="/static/js/toast.js"></script>
+    <link rel="stylesheet" href="/static/css/toast.css" />
     <link rel="icon" href="/static/images/favicon.ico">
     <title>{% block title %}{% endblock %} - SVN Imp</title>
     {% endblock %}
 </head>
 <body>
+    <div id="toast-message" class="w3-display-container">
+        <span id="toast-contents"></span>
+        <button id="close-toast" type="button" class="w3-button w3-circle w3-display-topright">&times;</button>
+    </div>
     <header id="page-header" class="w3-bar w3-teal w3-padding">
         <h1>
             <a href="/">SVN Imp</a>
