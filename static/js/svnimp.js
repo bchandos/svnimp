@@ -118,12 +118,11 @@ const addPaths = async (e) => {
     }
   );
   const json = await response.json();
-  // console.log(json);
   if (json.status === 'ok') {
     // Uncheck all the boxes
     window.location.reload();
   } else {
-    console.log('adding failed!');
+    setToast('Adding failed!');
   }
 }
 
@@ -148,21 +147,25 @@ const clAction = async (e) => {
     }
   );
   const json = await response.json();
-  // console.log(json);
   if (json.status === 'ok') {
     // Uncheck all the boxes
     window.location.reload();
   } else {
-    console.log('adding failed!');
+    setToast('Adding failed!');
   }
 }
 
 const clNameChange = (e) => {
-  console.log(e.target.value);
   if (e.target.value !== '') {
     document.getElementById('side-modal-add-cl-button').disabled = false;
   } else {
     document.getElementById('side-modal-add-cl-button').disabled = true;
+  }
+}
+
+const clSubmit = (e) => {
+  if (e.key === 'Enter' && e.target.value !== '') {
+    document.getElementById('side-modal-add-cl-button').click();
   }
 }
 
@@ -188,10 +191,10 @@ const commit = async (e) => {
       // Uncheck all the boxes
       window.location.reload();
     } else {
-      console.log('Commit failed!');
+      setToast('Commit failed!');
     }
   } else {
-    console.log('Must provide commit message!')
+    setToast('Must provide commit message!')
   }
 }
 
@@ -269,6 +272,7 @@ document.getElementById('side-modal-add-cl-button').addEventListener('click', cl
 document.getElementById('side-modal-rm-cl-button').addEventListener('click', clAction);
 document.getElementById('changelist-name').addEventListener('change', clNameChange);
 document.getElementById('changelist-name').addEventListener('keyup', clNameChange);
+document.getElementById('changelist-name').addEventListener('keyup', clSubmit);
 document.getElementById('side-modal-ci-button').addEventListener('click', commit);
 
 document.getElementById('repo-add').addEventListener('click', (e) => {
