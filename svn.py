@@ -108,4 +108,5 @@ def get_head_revision(repo):
     p = subprocess.run(args, stdout=subprocess.PIPE)
     res = p.stdout.decode('utf-8')
     os.chdir(cwd)
-    return int(res.split(':')[1].strip().replace('M',''))
+    svn_v = res.split(':')[1] if ':' in res else res
+    return int(svn_v.strip().replace('M',''))
