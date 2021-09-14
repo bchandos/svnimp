@@ -1,0 +1,15 @@
+#toast-message {
+    --width: 75vw;
+    position: absolute;
+    top: -10rem;
+    left: calc((100vw - var(--width)) / 2);
+    background-color: rgba(128,191,255,0.8);
+    width: var(--width);
+    height: 7rem;
+    z-index: 10;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.5);
+    transition: top 300ms ease-in-out;
+    padding: 0.5rem 3rem;
+}
