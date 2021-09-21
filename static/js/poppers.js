@@ -141,7 +141,6 @@ class PopperBox extends HTMLElement {
         e.currentTarget.addEventListener('transitionend', this._zPopBack);
         e.currentTarget.style.opacity = '0';
     }
-
 }
 
 customElements.define('popper-box', PopperBox);

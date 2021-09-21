@@ -18,7 +18,6 @@ const getDiff = async (e) => {
     hiddenEl.classList.add('w3-hide');
     btnEl.dataset.state = 'closed';
   }
-  createPoppers();
   setShowAllBtnState();
 }
 
