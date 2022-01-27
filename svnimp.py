@@ -6,7 +6,7 @@ from urllib.parse import unquote
 import bottle
 from bottle import Bottle, route, run, jinja2_view, static_file, redirect, BaseTemplate
 
-from svn import get_head_revision, get_logs, info, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths, update
+from svn import get_head_revision, get_logs, info, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths, update, revert
 
 from cfg import cache_log, repos, create_repo, get_cached_logs
 
@@ -15,14 +15,14 @@ bottle.debug(True)
 app = Bottle()
 
 ## HELPER FUNCTIONS ##
-def get_repo_from_id(repo_id):
+def get_repo_from_id(repo_id: int):
     return next(x for x in repos if x.id == repo_id)
 
 def get_uq_paths_from_json(json_):
     paths = json_.get('paths')
     return [unquote(p) for p in paths]
 
-def dtfmt(val):
+def dtfmt(val: str):
     from_zone = tz.gettz('UTC')
     to_zone = tz.gettz('Pacific/Los_Angeles')
     t = datetime.strptime(val, '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -45,7 +45,7 @@ def svn_info():
 
 @app.get('/repo/<repo_id:int>')
 @jinja2_view('views/repo.html')
-def svn_info(repo_id):
+def svn_info(repo_id: int):
     repo = get_repo_from_id(repo_id)
     repo_path = repo.path
     info_ = info(repo_path)
@@ -68,7 +68,7 @@ def svn_info(repo_id):
 
 @app.get('/repo/<repo_id:int>/logs')
 @jinja2_view('views/logs.html')
-def svn_logs(repo_id):
+def svn_logs(repo_id: int):
     data = {k: v for k, v in bottle.request.params.items()}
     repo = get_repo_from_id(repo_id)
     repo_path = repo.path
@@ -106,7 +106,7 @@ def svn_logs(repo_id):
 
 @app.get('/diff/<repo_id:int>')
 @jinja2_view('views/diff.html')
-def svn_diff(repo_id):
+def svn_diff(repo_id: int):
     data = {k: v for k, v in bottle.request.params.items()}
     path = unquote(data.get('path'))
     repo = get_repo_from_id(repo_id)
@@ -117,7 +117,7 @@ def svn_diff(repo_id):
     )
 
 @app.post('/add-paths/<repo_id:int>')
-def svn_add(repo_id):
+def svn_add(repo_id: int):
     uq_paths = get_uq_paths_from_json(bottle.request.json)
     repo = get_repo_from_id(repo_id)
     added_paths = add_paths(repo.path, uq_paths)
@@ -130,7 +130,7 @@ def svn_add(repo_id):
     return json.dumps(dict(status='error'))
 
 @app.post('/changelist/<repo_id:int>/<action:re:(add|remove)>')
-def svn_cl(repo_id, action):
+def svn_cl(repo_id: int, action: str):
     uq_paths = get_uq_paths_from_json(bottle.request.json)
     repo = get_repo_from_id(repo_id)
     if action == 'add':
@@ -147,7 +147,7 @@ def svn_cl(repo_id, action):
     return json.dumps(dict(status='error'))
 
 @app.post('/commit/<repo_id:int>')
-def commit(repo_id):
+def commit(repo_id: int):
     """ Commit some paths """
     uq_paths = get_uq_paths_from_json(bottle.request.json)
     data = bottle.request.json
@@ -175,12 +175,20 @@ def add_repo():
     redirect(bottle.request.get_header('referer', '/'))
 
 @app.get('/update/<repo_id:int>')
-def update_repo(repo_id):
+def update_repo(repo_id: int):
     """ Update a repo """
     repo = get_repo_from_id(repo_id)
     update(repo.path)
 
     redirect(bottle.request.get_header('referer', '/'))
+
+@app.post('/revert/<repo_id:int>')
+def revert_paths(repo_id: int):
+    """ Revert paths """
+    repo = get_repo_from_id(repo_id)
+    uq_paths = get_uq_paths_from_json(bottle.request.json)
+    reverted = revert(repo, uq_paths)
+
 
 # Static files
 
