@@ -1,6 +1,11 @@
 <div class="flex space-between">
     <div></div>
     <div>
+        <popper-box data-trigger-text="Revert changes" data-position="bottom">
+            Are you sure you want to revert changes? You can save the diff as a patch file using "Save to Patch".
+            <br>
+            <button class="revert-btn" type="button" data-repo="{{repo}}" data-path="{{path|urlencode|replace('/', '%2F')}}">I'm sure!</button>
+        </popper-box>
         <popper-box data-trigger-text="Save to Patch" data-position="bottom">
             <div>A form for saving a diff will go here.</div>
         </popper-box>

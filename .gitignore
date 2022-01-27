@@ -137,3 +137,4 @@ dmypy.json
 
 # Personal config
 db.sqlite*
+cfg.json

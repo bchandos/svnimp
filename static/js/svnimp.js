@@ -197,6 +197,22 @@ const commit = async (e) => {
   }
 }
 
+const revertPath = async (e) => {
+  const repo = e.target.dataset.repo;
+  const paths = [e.target.dataset.path] ?? JSON.parse(e.target.dataset.paths);
+  const url = `/revert/${repo}`;
+  const response = await fetch(
+    url,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ paths: [path] })
+    }
+  )
+}
+
 const toggleLogFiles = (e) => {
   const state = e.target.dataset.state;
   const rev = e.target.dataset.rev;

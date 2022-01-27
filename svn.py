@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 
 from xmltodict import pluralize_dict_key, xml_to_dict
 
-def run_xml_cmd(repo, args, list_elems=tuple()):
+def run_xml_cmd(repo: str, args: tuple, list_elems=tuple()) -> dict:
     cwd = os.getcwd()
     os.chdir(repo)
     newargs = args + ('--xml',)
@@ -20,7 +20,7 @@ def run_xml_cmd(repo, args, list_elems=tuple()):
     os.chdir(cwd)
     return d
 
-def run_standard_cmd(repo, args):
+def run_standard_cmd(repo: str, args: tuple):
     cwd = os.getcwd()
     os.chdir(repo)
     p = subprocess.run(args, stdout=subprocess.PIPE)
@@ -29,18 +29,18 @@ def run_standard_cmd(repo, args):
     
     return res.decode('utf-8')
 
-def status(repo):
+def status(repo: str):
     return run_xml_cmd(repo, ('svn', 'status'), list_elems=('changelist', 'entry'))['status']
 
-def info(repo):
+def info(repo: str):
     return run_xml_cmd(repo, ('svn', 'info'))['info']
 
-def repo_type(repo):
+def repo_type(repo: str):
     i = info(repo)
     url = i.get('url')
     return url.split('://')[0]
 
-def diff_file(repo, paths):
+def diff_file(repo: str, paths):
     diffs = run_standard_cmd(repo, ('svn', 'diff') + paths)
     return process_diffs(diffs)
 
@@ -110,3 +110,9 @@ def get_head_revision(repo):
     os.chdir(cwd)
     svn_v = res.split(':')[1] if ':' in res else res
     return int(svn_v.strip().replace('M',''))
+
+def revert(repo, paths):
+    # Revert paths
+    reverted_paths = run_standard_cmd(repo, ('svn', 'revert') + tuple(paths))
+    lines = [p for p in checked_in.split('\n') if p]
+    return [line.split('Reverted')[1].strip().replace('\'', '') for line in lines if 'Reverted' in line]
