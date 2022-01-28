@@ -67,6 +67,17 @@
                         <span class="w3-round w3-teal w3-padding-small">
                             {{path.action}}
                         </span>
+                        <button 
+                            data-state="closed" 
+                            data-repo="{{repo_id}}" 
+                            data-path="{{path.text[1:]|urlencode|replace('/', '%2F')}}" 
+                            data-start-rev="{{log.revision|int - 1}}"
+                            data-end-rev="{{log.revision}}"
+                            class="diff-button w3-button w3-circle"
+                        >
+                            &#9654;
+                        </button>
+                        <div class="diff-block hidden-diff w3-hide"></div>
                     </div>
                 {% endfor %}
             </div>

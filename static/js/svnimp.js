@@ -5,10 +5,12 @@ const getDiff = async (e) => {
   const path = btnEl.dataset.path;
   const repo = btnEl.dataset.repo;
   const state = btnEl.dataset.state;
+  const startRev = btnEl.dataset.startRev;
+  const endRev = btnEl.dataset.endRev;
   const hiddenEl = btnEl.nextElementSibling;
   if (state==='closed') {
     if (hiddenEl.innerHTML === '') {
-      hiddenEl.innerHTML = await diffRequest(repo, path);
+      hiddenEl.innerHTML = await diffRequest(repo, path, startRev, endRev);
     }
     hiddenEl.classList.remove('w3-hide');
     btnEl.innerHTML = '&#9660;';
@@ -34,13 +36,16 @@ const reloadDiff = async (e) => {
   }
 }
 
-const diffRequest = async (repo, path) => {
-  const url = `/diff/${repo}?path=${path}`;
-    const response = await fetch(
-      url
-    );
-    const text = await response.text();
-    return text
+const diffRequest = async (repo, path, startRev, endRev) => {
+  let url = `/diff/${repo}?path=${path}`;
+  if (startRev && endRev) {
+    url += `&start_rev=${startRev}&end_rev=${endRev}`
+  }
+  const response = await fetch(
+    url
+  );
+  const text = await response.text();
+  return text
 }
 
 const addPathToModal = (e) => {

@@ -1,18 +1,18 @@
 - [ ] Catch XML Parsing errors (plugin?)
-- [x] Revert changes
-- [x] Sorting on log page
 - [ ] Sorting on log page retain URL parameters...
 - [ ] Select all in changelist
-- [ ] Save diff to patch
+- [ ] Save diff to patch (file or database?)
 - [ ] Save changelist diff to patch
 - [ ] Add notes to individual files or changelist (put 'em in a database)
 - [ ] Arrowbox direction and placement logic needs refinement
 - [ ] Support "D" attribute on elements and test Deleted files
 - [ ] Get logs for individual path
-- [ ] Get diff for path from log
 - [ ] Add type annotations
-- [x] Change `Repo` to `dataclass`
 - [ ] Fix "Absolute template path names are deprecated" message spamming output
+- [x] Get diff for path from log
+- [x] Change `Repo` to `dataclass`
+- [x] Revert changes
+- [x] Sorting on log page
 - [x] Changelist sorting stability
 - [x] Changelist show all diff button
 - [X] Poppers overflow issue

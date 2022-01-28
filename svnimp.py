@@ -113,8 +113,13 @@ def svn_diff(repo_id: int):
     data = {k: v for k, v in bottle.request.params.items()}
     path = unquote(data.get('path'))
     repo = get_repo_from_id(repo_id)
+    start_rev = data.get('start_rev')
+    end_rev = data.get('end_rev')
+    if start_rev and end_rev:
+        start_rev, end_rev = map(int, (start_rev, end_rev))
+    
     return dict(
-        lines=diff_file(repo.path, (path,)),
+        lines=diff_file(repo.path, (path,), start_rev, end_rev),
         repo=repo.id,
         path=path,
     )

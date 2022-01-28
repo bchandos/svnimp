@@ -2,6 +2,7 @@ import subprocess
 import re
 import os
 from tempfile import NamedTemporaryFile
+from typing import Optional
 
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ParseError
@@ -44,15 +45,19 @@ def repo_type(repo: str):
     url = i.get('url')
     return url.split('://')[0]
 
-def diff_file(repo: str, paths):
-    diffs = run_standard_cmd(repo, ('svn', 'diff') + paths)
+def diff_file(repo: str, paths: tuple, start_rev: Optional[int] = None, end_rev: Optional[int] = None) -> list:
+    if start_rev and end_rev:
+        rev = (f'-r{start_rev}:{end_rev}',)
+    else:
+        rev = tuple()
+    diffs = run_standard_cmd(repo, ('svn', 'diff') + rev + paths)
     return process_diffs(diffs)
 
 def diff_cl(repo, cl_name):
     diffs = run_standard_cmd(repo, ('svn', 'diff', '--cl', cl_name))
     return process_diffs(diffs)
 
-def process_diffs(diff_string):
+def process_diffs(diff_string: str) -> list:
     all_lines = diff_string.splitlines()
     pattern = 'Index: (.*)'
     for idx, line in enumerate(all_lines):
