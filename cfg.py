@@ -1,4 +1,4 @@
-from collections import namedtuple
+from dataclasses import dataclass
 import json
 import sqlite3
 
@@ -7,7 +7,15 @@ import aiosql
 repo_queries = aiosql.from_path('sql/repos.sql', 'sqlite3')
 log_queries = aiosql.from_path('sql/logs.sql', 'sqlite3')
 
-Repo = namedtuple('Repo', ['id', 'name', 'path', 'cache_logs'])
+# Repo = namedtuple('Repo', ['id', 'name', 'path', 'cache_logs'])
+
+@dataclass
+class Repo:
+    """ Class to represent an SVN repository """
+    id: int
+    name: str
+    path: str
+    cache_logs: bool
 
 def get_conn():
     conn = sqlite3.connect('db.sqlite')
