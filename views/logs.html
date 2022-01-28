@@ -9,7 +9,7 @@
 {% block content %}
     <div class="w3-container">
         <h1>Repository {{name}} logs</h1>
-        <form action="/repo/{{repo_id}}/logs" method="get">
+        <form action="/repo/{{repo_id}}/logs/{{direction}}" method="get">
             <label for="start">Start</label>
             <select class="w3-select" style="width: 5rem;" name="start" id="start-rev" autocomplete="off">
                 {% for r in range(last_rev) %}
@@ -33,7 +33,13 @@
                 {% endfor %}
             </select>
             <button class="w3-button w3-teal w3-margin-left" type="submit">Get Logs</button>
-            <a class="w3-button w3-teal w3-margin-left" href="/repo/{{repo_id}}/logs">Clear</a>
+            <a class="w3-button w3-teal w3-margin-left" href="/repo/{{repo_id}}/logs/{{direction}}">Clear</a>
+            <a 
+                class="w3-button w3-teal w3-margin-left" 
+                href="/repo/{{repo_id}}/logs/{{'ascending' if direction=='descending' else 'descending'}}"
+            >
+                {{'Ascending' if direction=='descending' else 'Descending'}}
+            </a>
         </form>
         {% for log in logs %}
             <div class="w3-row w3-teal w3-margin-top w3-padding-small">

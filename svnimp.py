@@ -66,9 +66,9 @@ def svn_info(repo_id: int):
         repos=repos,
     )
 
-@app.get('/repo/<repo_id:int>/logs')
+@app.get('/repo/<repo_id:int>/logs/<direction:re:(ascending|descending)>')
 @jinja2_view('views/logs.html')
-def svn_logs(repo_id: int):
+def svn_logs(repo_id: int, direction: str):
     data = {k: v for k, v in bottle.request.params.items()}
     repo = get_repo_from_id(repo_id)
     repo_path = repo.path
@@ -92,6 +92,8 @@ def svn_logs(repo_id: int):
         cached_logs = list()
 
     logs = cached_logs + live_logs
+    if direction == 'descending':
+        logs.reverse()
     return dict(
         name=repo.name,
         repo_id=repo.id,
@@ -100,6 +102,7 @@ def svn_logs(repo_id: int):
         start_rev=start_rev,
         end_rev=end_rev,
         last_rev=last_rev,
+        direction=direction,
     )
 
 # AJAX Views
@@ -187,7 +190,15 @@ def revert_paths(repo_id: int):
     """ Revert paths """
     repo = get_repo_from_id(repo_id)
     uq_paths = get_uq_paths_from_json(bottle.request.json)
-    reverted = revert(repo, uq_paths)
+    reverted = revert(repo.path, uq_paths)
+    
+    if all([uq_path in reverted for uq_path in uq_paths]):
+        return json.dumps(
+            dict(
+                status='ok'
+            )
+        )
+    return json.dumps(dict(status='error'))
 
 
 # Static files
@@ -218,4 +229,4 @@ def test_page():
 
 # Run the Application
 
-run(app, host='localhost', port=4444)
+run(app, host='0.0.0.0', port=4444)
