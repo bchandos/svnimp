@@ -36,7 +36,7 @@ BaseTemplate.settings.update({'filters': {'dtfmt': dtfmt}})
 
 # HTTP Views
 @app.get('/')
-@jinja2_view('views/main.html')
+@jinja2_view('main.html')
 def svn_info():
     return dict(
         repos=repos,
@@ -44,7 +44,7 @@ def svn_info():
 
 
 @app.get('/repo/<repo_id:int>')
-@jinja2_view('views/repo.html')
+@jinja2_view('repo.html')
 def svn_info(repo_id: int):
     repo = get_repo_from_id(repo_id)
     repo_path = repo.path
@@ -67,7 +67,7 @@ def svn_info(repo_id: int):
     )
 
 @app.get('/repo/<repo_id:int>/logs/<direction:re:(ascending|descending)>')
-@jinja2_view('views/logs.html')
+@jinja2_view('logs.html')
 def svn_logs(repo_id: int, direction: str):
     data = {k: v for k, v in bottle.request.params.items()}
     repo = get_repo_from_id(repo_id)
@@ -108,7 +108,7 @@ def svn_logs(repo_id: int, direction: str):
 # AJAX Views
 
 @app.get('/diff/<repo_id:int>')
-@jinja2_view('views/diff.html')
+@jinja2_view('diff.html')
 def svn_diff(repo_id: int):
     data = {k: v for k, v in bottle.request.params.items()}
     path = unquote(data.get('path'))
@@ -223,7 +223,7 @@ def images(filepath):
 # Testing
 
 @app.get('/test-page')
-@jinja2_view('views/test.html')
+@jinja2_view('test.html')
 def test_page():
     """ A test page, obvi """
     return dict(
