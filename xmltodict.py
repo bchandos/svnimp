@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-def xml_to_dict(t):
+def xml_to_dict(t) -> dict:
     d = {t.tag: {} if t.attrib else None}
     children = list(t)
     if children:
@@ -20,7 +20,7 @@ def xml_to_dict(t):
             d[t.tag] = text
     return d
 
-def pluralize_dict_key(d, key):
+def pluralize_dict_key(d: dict, key: str) -> dict:
     """ Given a dictionary, find key and ensure they are 
         represented as lists, regardless of length.
     """
