@@ -4,6 +4,7 @@ import os
 from tempfile import NamedTemporaryFile
 
 import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import ParseError
 
 from xmltodict import pluralize_dict_key, xml_to_dict
 
@@ -14,9 +15,12 @@ def run_xml_cmd(repo: str, args: tuple, list_elems=tuple()) -> dict:
     # Elements that we always want to be list/array type, 
     # regardless of how many child elements they have
     p = subprocess.run(newargs, stdout=subprocess.PIPE)
-    d = xml_to_dict(ET.XML(p.stdout))
-    for elem in list_elems:
-        d = pluralize_dict_key(d, elem)
+    try:
+        d = xml_to_dict(ET.XML(p.stdout))
+        for elem in list_elems:
+            d = pluralize_dict_key(d, elem)
+    except ParseError:
+        d = dict()
     os.chdir(cwd)
     return d
 
@@ -94,7 +98,7 @@ def get_logs(repo, start_rev, end_rev, paths=tuple()):
         repo, 
         ('svn', 'log', '--verbose') + tuple(paths) + (f'-r{start_rev}:{end_rev}',),
         list_elems=('path',)
-    )['log']['logentry']
+    ).get('log',{}).get('logentry',[])
 
 def update(repo):
     # Update the repo, ignoring output
@@ -114,5 +118,5 @@ def get_head_revision(repo):
 def revert(repo, paths):
     # Revert paths
     reverted_paths = run_standard_cmd(repo, ('svn', 'revert') + tuple(paths))
-    lines = [p for p in checked_in.split('\n') if p]
+    lines = [p for p in reverted_paths.split('\n') if p]
     return [line.split('Reverted')[1].strip().replace('\'', '') for line in lines if 'Reverted' in line]

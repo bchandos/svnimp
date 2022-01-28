@@ -208,9 +208,15 @@ const revertPath = async (e) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ paths: [path] })
+      body: JSON.stringify({ paths })
     }
   )
+  const json = await response.json()
+  if (json.status === 'ok') {
+    window.location.reload();
+  } else {
+    setToast('Revert may have failed!');
+  }
 }
 
 const toggleLogFiles = (e) => {
