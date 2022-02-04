@@ -34,26 +34,36 @@ def run_standard_cmd(repo: str, args: tuple):
     
     return res.decode('utf-8')
 
-def status(repo: str):
+def status(repo: str) -> dict:
     return run_xml_cmd(repo, ('svn', 'status'), list_elems=('changelist', 'entry'))['status']
 
-def info(repo: str):
+def info(repo: str) -> dict:
     return run_xml_cmd(repo, ('svn', 'info'))['info']
 
-def repo_type(repo: str):
+def repo_type(repo: str) -> str:
     i = info(repo)
     url = i.get('url')
     return url.split('://')[0]
+
+def relative_url(repo: str) -> str:
+    i = info(repo)
+    ru = i['entry']['relative-url']
+    return ru.split('^/')[1]
 
 def diff_file(repo: str, paths: tuple, start_rev: Optional[int] = None, end_rev: Optional[int] = None) -> list:
     if start_rev and end_rev:
         rev = (f'-r{start_rev}:{end_rev}',)
     else:
         rev = tuple()
+    if all([p[0] == '/' for p in paths]):
+        tmp_paths = (p[1:] for p in paths)
+        ru = relative_url(repo)
+        paths = tuple(p.replace(f'{ru}/', '', 1) if ru else p for p in tmp_paths)
+    print(paths)
     diffs = run_standard_cmd(repo, ('svn', 'diff') + rev + paths)
     return process_diffs(diffs)
 
-def diff_cl(repo, cl_name):
+def diff_cl(repo: str, cl_name: str) -> list:
     diffs = run_standard_cmd(repo, ('svn', 'diff', '--cl', cl_name))
     return process_diffs(diffs)
 

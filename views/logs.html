@@ -70,7 +70,7 @@
                         <button 
                             data-state="closed" 
                             data-repo="{{repo_id}}" 
-                            data-path="{{path.text[1:]|urlencode|replace('/', '%2F')}}" 
+                            data-path="{{path.text|urlencode|replace('/', '%2F')}}" 
                             data-start-rev="{{log.revision|int - 1}}"
                             data-end-rev="{{log.revision}}"
                             class="diff-button w3-button w3-circle"
