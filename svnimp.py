@@ -14,6 +14,8 @@ bottle.debug(True)
 
 app = Bottle()
 
+session_msg = None
+
 ## HELPER FUNCTIONS ##
 def get_repo_from_id(repo_id: int):
     return next(x for x in repos if x.id == repo_id)
@@ -64,6 +66,7 @@ def svn_info(repo_id: int):
         status=status_,
         cl_names=cl_names,
         repos=repos,
+        session_msg=session_msg
     )
 
 @app.get('/repo/<repo_id:int>/logs/<direction:re:(ascending|descending)>')
@@ -161,11 +164,12 @@ def commit(repo_id: int):
     data = bottle.request.json
     commit_msg = data.get('commitMessage')
     repo = get_repo_from_id(repo_id)
-    processed_paths = commit_paths(repo.path, uq_paths, commit_msg)
+    processed_paths, revision = commit_paths(repo.path, uq_paths, commit_msg)
     if (set(processed_paths) == set(uq_paths)):
         return json.dumps(
             dict(
-                status='ok'
+                status='ok',
+                message=f'Succesfully commited {len(processed_paths)} path{"s" if len(processed_paths) > 1 else ""}, revision {revision}',
             )
         )
     return json.dumps(dict(status='error'))
@@ -205,6 +209,13 @@ def revert_paths(repo_id: int):
         )
     return json.dumps(dict(status='error'))
 
+@app.post('/set-session-msg')
+def set_session_msg():
+    """ Set a session message """
+    data = bottle.request.json
+    print('>>>', data)
+    global session_msg
+    session_msg = data.get('msg')
 
 # Static files
 

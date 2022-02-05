@@ -9,6 +9,8 @@
 - [ ] Get logs for individual path
 - [ ] Add type annotations
 - [ ] Fix "Absolute template path names are deprecated" message spamming output
+- [ ] Cleanup toast message formatting
+- [x] Toast messages passed through page reloads (session)
 - [x] Get diff for path from log
 - [x] Change `Repo` to `dataclass`
 - [x] Revert changes

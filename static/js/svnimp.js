@@ -193,7 +193,7 @@ const commit = async (e) => {
     // console.log(json);
     if (json.status === 'ok') {
       // Uncheck all the boxes
-      window.location.reload();
+      const msg = setSessionMsg(json.message).then(() => window.location.reload())
     } else {
       setToast('Commit failed!');
     }

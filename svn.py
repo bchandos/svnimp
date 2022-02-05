@@ -103,9 +103,14 @@ def commit_paths(repo, paths, commit_msg):
         ci_paths = list()
         for line in lines:
             if 'Transmitting file data' in line:
-                break
+                continue
+            if 'Committing transaction' in line:
+                continue
+            if 'Committed revision' in line:
+                revision = int(line[18:].strip().replace('.',''))
+                continue
             ci_paths.append(line[14:].strip())
-        return ci_paths
+        return (ci_paths, revision)
 
 def get_logs(repo, start_rev, end_rev, paths=tuple()):
     # Get logs from SVN

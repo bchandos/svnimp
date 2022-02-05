@@ -114,4 +114,12 @@
         </div>
     </div>
 </body>
+{% if session_msg %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setToast('{{session_msg}}')
+            clearSessionMsg();
+        })
+    </script>
+{% endif %}
 </html>
