@@ -6,10 +6,14 @@
 - [ ] Add notes to individual files or changelist (put 'em in a database)
 - [ ] Arrowbox direction and placement logic needs refinement
 - [ ] Support "D" attribute on elements and test Deleted files
-- [ ] Get logs for individual path
+- [ ] Get logs for individual path or revision
 - [ ] Add type annotations
 - [ ] Fix "Absolute template path names are deprecated" message spamming output
 - [ ] Cleanup toast message formatting
+- [ ] Handle merge conflicts...
+    - `svn status -u --xml` will provide details on what files have been updated in the repo
+    - `svn update --action <ACTION>` - Specifies an action for automatic conflict resolution
+    - Using the above, could postpone every conflict, identify and load interactively?
 - [x] Toast messages passed through page reloads (session)
 - [x] Get diff for path from log
 - [x] Change `Repo` to `dataclass`
