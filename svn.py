@@ -15,7 +15,7 @@ def run_xml_cmd(repo: str, args: tuple, list_elems=tuple()) -> dict:
     newargs = args + ('--xml',)
     # Elements that we always want to be list/array type, 
     # regardless of how many child elements they have
-    p = subprocess.run(newargs, stdout=subprocess.PIPE)
+    p = subprocess.run(newargs, stdout=subprocess.PIPE, timeout=10)
     try:
         d = xml_to_dict(ET.XML(p.stdout))
         for elem in list_elems:
@@ -28,7 +28,7 @@ def run_xml_cmd(repo: str, args: tuple, list_elems=tuple()) -> dict:
 def run_standard_cmd(repo: str, args: tuple):
     cwd = os.getcwd()
     os.chdir(repo)
-    p = subprocess.run(args, stdout=subprocess.PIPE)
+    p = subprocess.run(args, stdout=subprocess.PIPE, timeout=10)
     res = p.stdout
     os.chdir(cwd)
     
@@ -122,7 +122,10 @@ def get_logs(repo, start_rev, end_rev, paths=tuple()):
 
 def update(repo):
     # Update the repo, ignoring output
-    run_standard_cmd(repo, ('svn', 'up'))
+    # First, attempt to detect the possibility of merge conflicts
+    status_update = run_xml_cmd(repo, ('svn', 'status', '-u'))
+    print(status_update)
+    # run_standard_cmd(repo, ('svn', 'up'))
 
 def get_head_revision(repo):
     # Get the true head revision number by parsing svnversion

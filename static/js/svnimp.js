@@ -44,8 +44,12 @@ const diffRequest = async (repo, path, startRev, endRev) => {
   const response = await fetch(
     url
   );
-  const text = await response.text();
-  return text
+  if (!response.redirected) {
+    const text = await response.text();
+    return text
+  } else {
+    window.location.reload()
+  }
 }
 
 const addPathToModal = (e) => {

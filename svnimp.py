@@ -2,9 +2,11 @@ from datetime import datetime
 from dateutil import tz
 import json
 from urllib.parse import unquote
+from subprocess import TimeoutExpired
+import os
 
 import bottle
-from bottle import Bottle, route, run, jinja2_view, static_file, redirect, BaseTemplate
+from bottle import Bottle, route, run, jinja2_view, static_file, redirect, BaseTemplate, install
 
 from svn import get_head_revision, get_logs, info, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths, update, revert
 
@@ -15,6 +17,8 @@ bottle.debug(True)
 app = Bottle()
 
 session_msg = None
+
+project_directory = os.getcwd()
 
 ## HELPER FUNCTIONS ##
 def get_repo_from_id(repo_id: int):
@@ -36,12 +40,33 @@ BaseTemplate.settings.update({'filters': {'dtfmt': dtfmt}})
 
 ## END HELPER FUNCTIONS - ALL FURTHER FUNCTIONS MUST BE UNHELPFUL ##
 
+## BEGIN PLUGINS
+
+def timeout_catcher(callback):
+    def wrapper(*args, **kwargs):
+        try:
+            return callback(*args, **kwargs)
+        except TimeoutExpired:
+            os.chdir(project_directory)
+            referer = bottle.request.get_header('Referer', '/')
+            global session_msg
+            session_msg = 'SVN process timed out. Are you sure you can reach the server?'
+            # if bottle.request.is_xhr:
+                # return 
+            return bottle.redirect(referer)
+    return wrapper
+
+app.install(timeout_catcher)
+
+## END PLUGINS
+
 # HTTP Views
 @app.get('/')
 @jinja2_view('main.html')
 def svn_info():
     return dict(
         repos=repos,
+        session_msg=session_msg,
     )
 
 
@@ -106,6 +131,7 @@ def svn_logs(repo_id: int, direction: str):
         end_rev=end_rev,
         last_rev=last_rev,
         direction=direction,
+        session_msg=session_msg,
     )
 
 # AJAX Views
