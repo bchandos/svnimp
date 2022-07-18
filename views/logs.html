@@ -32,6 +32,8 @@
                     {% endif %}
                 {% endfor %}
             </select>
+            <label class="w3-margin-left" for="single-revision">Single revision</label>
+            <input class="w3-input" type="text" name="single-revision" id="single-revision" autocomplete="off">
             <button class="w3-button w3-teal w3-margin-left" type="submit">Get Logs</button>
             <a class="w3-button w3-teal w3-margin-left" href="/repo/{{repo_id}}/logs/{{direction}}">Clear</a>
             <a 

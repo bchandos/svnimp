@@ -38,6 +38,10 @@ html, body {
 #footer {
     height: 6rem;
 }
+#single-revision {
+    display: inline;
+    width: 6rem;
+}
 .diff-block {
     font-family: monospace;
     font-size: 0.75rem;

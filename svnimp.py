@@ -101,9 +101,13 @@ def svn_logs(repo_id: int, direction: str):
     repo = get_repo_from_id(repo_id)
     repo_path = repo.path
     last_rev = get_head_revision(repo_path)
-    offset = 20 if last_rev > 20 else last_rev
-    start_rev = int(data.get('start', str(last_rev - offset)))
-    end_rev = int(data.get('end', last_rev))
+    if single_revision := data.get('single-revision'):
+        start_rev = int(single_revision)
+        end_rev = int(single_revision)
+    else:
+        offset = 20 if last_rev > 20 else last_rev
+        start_rev = int(data.get('start', str(last_rev - offset)))
+        end_rev = int(data.get('end', last_rev))
     
     if repo.cache_logs:
         cached_logs = get_cached_logs(repo.id, start_rev, end_rev)
