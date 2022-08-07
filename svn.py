@@ -15,6 +15,7 @@ def run_xml_cmd(repo: str, args: tuple, list_elems=tuple()) -> dict:
     newargs = args + ('--xml',)
     # Elements that we always want to be list/array type, 
     # regardless of how many child elements they have
+    print('>>>', newargs)
     p = subprocess.run(newargs, stdout=subprocess.PIPE, timeout=10)
     try:
         d = xml_to_dict(ET.XML(p.stdout))
@@ -28,6 +29,7 @@ def run_xml_cmd(repo: str, args: tuple, list_elems=tuple()) -> dict:
 def run_standard_cmd(repo: str, args: tuple):
     cwd = os.getcwd()
     os.chdir(repo)
+    print('>>>', args)
     p = subprocess.run(args, stdout=subprocess.PIPE, timeout=10)
     res = p.stdout
     os.chdir(cwd)
@@ -112,12 +114,15 @@ def commit_paths(repo, paths, commit_msg):
             ci_paths.append(line[14:].strip())
         return (ci_paths, revision)
 
-def get_logs(repo, start_rev, end_rev, paths=tuple()):
+def get_logs(repo, start_rev, end_rev, path=None):
     # Get logs from SVN
+    args = ('svn', 'log', '--verbose') + (f'-r{start_rev}:{end_rev}',)
+    if path:
+        args += (path,)
     return run_xml_cmd(
         repo, 
-        ('svn', 'log', '--verbose') + tuple(paths) + (f'-r{start_rev}:{end_rev}',),
-        list_elems=('path',)
+        args,
+        list_elems=('path', 'logentry')
     ).get('log',{}).get('logentry',[])
 
 def update(repo) -> bool:
@@ -136,6 +141,10 @@ def update(repo) -> bool:
         return True
     return False
 
+def list_paths(repo: str, revision: int):
+    # Get a list of paths at a given revision
+    lists = run_standard_cmd(repo, ('svn', f'-r{revision}', 'ls'))
+    return [p for p in lists.split('\n') if p]
 
 def get_head_revision(repo):
     # Get the true head revision number by parsing svnversion

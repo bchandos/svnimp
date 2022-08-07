@@ -44,6 +44,10 @@ body {
   display: inline;
   width: 6rem;
 }
+#specific-path {
+  display: inline;
+  width: 14rem;
+}
 .diff-block {
   font-family: monospace;
   font-size: 0.75rem;

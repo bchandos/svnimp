@@ -1,88 +1,116 @@
-{% extends "base.html" %}
-{% block title %}Logs {{name}}{% endblock %}
-{% block head %}
-    {{ super() }}
-    <style type="text/css">
-        
-    </style>
-{% endblock %}
-{% block content %}
-    <div class="w3-container">
-        <h1>Repository {{name}} logs</h1>
-        <form action="/repo/{{repo_id}}/logs/{{direction}}" method="get">
-            <label for="start">Start</label>
-            <select class="w3-select" style="width: 5rem;" name="start" id="start-rev" autocomplete="off">
-                {% for r in range(last_rev) %}
-                    {% if r == start_rev %}
-                        <option value="{{r}}" selected>{{r}}</option>
-                    {% else %}
-                        <option value="{{r}}">{{r}}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-            <label class="w3-margin-left" for="end">End</label>
-            <select class="w3-select" style="width: 7rem;" name="end" id="end-rev" autocomplete="off">
-                {% for r in range(last_rev, 0, -1) %}
-                    {% if loop.first %}
-                        <option value="{{r}}">{{r}} (head)</option>
-                    {% elif r == end_rev %}
-                        <option value="{{r}}" selected>{{r}}</option>
-                    {% else %}
-                        <option value="{{r}}">{{r}}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-            <label class="w3-margin-left" for="single-revision">Single revision</label>
-            <input class="w3-input" type="text" name="single-revision" id="single-revision" autocomplete="off">
-            <button class="w3-button w3-teal w3-margin-left" type="submit">Get Logs</button>
-            <a class="w3-button w3-teal w3-margin-left" href="/repo/{{repo_id}}/logs/{{direction}}">Clear</a>
-            <a 
-                class="w3-button w3-teal w3-margin-left" 
-                href="/repo/{{repo_id}}/logs/{{'ascending' if direction=='descending' else 'descending'}}"
-            >
-                {{'Ascending' if direction=='descending' else 'Descending'}}
-            </a>
-        </form>
-        {% for log in logs %}
-            <div class="w3-row w3-teal w3-margin-top w3-padding-small">
-                <div class="w3-col m4">Revision: {{log.revision}}</div>
-                <div class="w3-col m4">Author: {{log.author}}</div>
-                <div class="w3-col m3">Date: {{log.date|dtfmt}}</div>
-                <div class="w3-col m1">
-                    <button 
-                        class="w3-button w3-circle w3-small log-path-toggle" 
-                        type="button" 
-                        data-state="closed"
-                        data-rev="{{log.revision}}"
-                    >
-                        &#9654;
-                    </button>
-                </div>
-            </div>
-            <div class="w3-row">
-                <p class="w3-margin-left" style="white-space: pre;">{{log.msg|escape}}</p>
-            </div>
-            <div id="log-paths-r{{log.revision}}" class="w3-row w3-margin-left w3-hide">
-                {% for path in log.paths.path %}
-                    <div class="w3-col w3-margin-left">
-                        {{path.text}}
-                        <span class="w3-round w3-teal w3-padding-small">
-                            {{path.action}}
-                        </span>
-                        <button 
-                            data-state="closed" 
-                            data-repo="{{repo_id}}" 
-                            data-path="{{path.text|urlencode|replace('/', '%2F')}}" 
-                            data-start-rev="{{log.revision|int - 1}}"
-                            data-end-rev="{{log.revision}}"
-                            class="diff-button w3-button w3-circle"
-                        >
-                            &#9654;
-                        </button>
-                        <div class="diff-block hidden-diff w3-hide"></div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endfor %}
+{% extends "base.html" %} {% block title %}Logs {{name}}{% endblock %} {% block
+head %} {{ super() }}
+<style type="text/css"></style>
+{% endblock %} {% block content %}
+<div class="w3-container">
+  <h1>Repository {{name}} logs</h1>
+  <form action="/repo/{{repo_id}}/logs/{{direction}}" method="get">
+    <label for="start">Start</label>
+    <select
+      class="w3-select"
+      style="width: 5rem"
+      name="start"
+      id="start-rev"
+      autocomplete="off"
+    >
+      {% for r in range(last_rev) %} {% if r == start_rev %}
+      <option value="{{r}}" selected>{{r}}</option>
+      {% else %}
+      <option value="{{r}}">{{r}}</option>
+      {% endif %} {% endfor %}
+    </select>
+    <label class="w3-margin-left" for="end">End</label>
+    <select
+      class="w3-select"
+      style="width: 7rem"
+      name="end"
+      id="end-rev"
+      autocomplete="off"
+    >
+      {% for r in range(last_rev, 0, -1) %} {% if loop.first %}
+      <option value="{{r}}">{{r}} (head)</option>
+      {% elif r == end_rev %}
+      <option value="{{r}}" selected>{{r}}</option>
+      {% else %}
+      <option value="{{r}}">{{r}}</option>
+      {% endif %} {% endfor %}
+    </select>
+    <label class="w3-margin-left" for="single-revision">Single revision</label>
+    <input
+      class="w3-input"
+      type="text"
+      name="single-revision"
+      id="single-revision"
+      autocomplete="off"
+    />
+    <label for="specific-path" class="w3-margin-left">Filename</label>
+    <input
+      type="text"
+      class="w3-input"
+      name="specific-path"
+      id="specific-path"
+      autocomplete="off"
+      list="list-paths"
+      value="{{specific_path}}"
+    />
+    <datalist id="list-paths" name="list-paths">
+      {% for p in available_paths %}
+      <option value="{{p}}">{% endfor %}</option>
+    </datalist>
+
+    <button class="w3-button w3-teal w3-margin-left" type="submit">
+      Get Logs
+    </button>
+    <a
+      class="w3-button w3-teal w3-margin-left"
+      href="/repo/{{repo_id}}/logs/{{direction}}"
+      >Clear</a
+    >
+    <a
+      class="w3-button w3-teal w3-margin-left"
+      href="/repo/{{repo_id}}/logs/{{'ascending' if direction=='descending' else 'descending'}}"
+    >
+      {{'Ascending' if direction=='descending' else 'Descending'}}
+    </a>
+  </form>
+  {% for log in logs %}
+  <div class="w3-row w3-teal w3-margin-top w3-padding-small">
+    <div class="w3-col m4">Revision: {{log.revision}}</div>
+    <div class="w3-col m4">Author: {{log.author}}</div>
+    <div class="w3-col m3">Date: {{log.date|dtfmt}}</div>
+    <div class="w3-col m1">
+      <button
+        class="w3-button w3-circle w3-small log-path-toggle"
+        type="button"
+        data-state="closed"
+        data-rev="{{log.revision}}"
+      >
+        &#9654;
+      </button>
     </div>
+  </div>
+  <div class="w3-row">
+    <p class="w3-margin-left" style="white-space: pre">{{log.msg|escape}}</p>
+  </div>
+  <div id="log-paths-r{{log.revision}}" class="w3-row w3-margin-left w3-hide">
+    {% for path in log.paths.path %}
+    <div class="w3-col w3-margin-left">
+      {{path.text}}
+      <span class="w3-round w3-teal w3-padding-small"> {{path.action}} </span>
+      <button
+        data-state="closed"
+        data-repo="{{repo_id}}"
+        data-path="{{path.text|urlencode|replace('/', '%2F')}}"
+        data-start-rev="{{log.revision|int - 1}}"
+        data-end-rev="{{log.revision}}"
+        class="diff-button w3-button w3-circle"
+      >
+        &#9654;
+      </button>
+      <div class="diff-block hidden-diff w3-hide"></div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}

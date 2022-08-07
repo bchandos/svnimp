@@ -1,5 +1,4 @@
 - [ ] Setup testing scripts
-- [ ] Poppers z-index issues
 - [ ] Catch XML Parsing errors (plugin?)
 - [ ] Sorting on log page retain URL parameters...
 - [ ] Select all in changelist
@@ -16,6 +15,7 @@
   - `svn status -u --xml` will provide details on what files have been updated in the repo
   - `svn update --action <ACTION>` - Specifies an action for automatic conflict resolution
   - Using the above, could postpone every conflict, identify and load interactively?
+- [x] Poppers z-index issues
 - [x] Toast messages passed through page reloads (session)
 - [x] Get diff for path from log
 - [x] Change `Repo` to `dataclass`

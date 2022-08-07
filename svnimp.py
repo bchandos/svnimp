@@ -8,7 +8,7 @@ import os
 import bottle
 from bottle import Bottle, route, run, jinja2_view, static_file, redirect, BaseTemplate, install
 
-from svn import get_head_revision, get_logs, info, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths, update, revert
+from svn import get_head_revision, get_logs, info, list_paths, status, diff_file, add_paths, add_to_changelist, remove_from_changelist, commit_paths, update, revert
 
 from cfg import cache_log, repos, create_repo, get_cached_logs
 
@@ -110,20 +110,22 @@ def svn_logs(repo_id: int, direction: str):
         start_rev = int(data.get('start', str(last_rev - offset)))
         end_rev = int(data.get('end', last_rev))
     
+    specific_path = data.get('specific-path', '')
+
     if repo.cache_logs:
-        cached_logs = get_cached_logs(repo.id, start_rev, end_rev)
+        cached_logs = get_cached_logs(repo.id, start_rev, end_rev, specific_path)
         revs_from_cache = {int(l['revision']) for l in cached_logs}
         if revs_from_cache == set(range(start_rev, end_rev + 1)):
             live_logs = list()
         else:
-            live_logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev)
+            live_logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev, path=specific_path)
             cached_logs = list()
             for log in live_logs:
                 cache_log(repo.id, int(log['revision']), json.dumps(log))
     else:
-        live_logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev)
+        live_logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev, path=specific_path)
         cached_logs = list()
-
+    available_paths = list_paths(repo_path, end_rev)
     logs = cached_logs + live_logs
     if direction == 'descending':
         logs.reverse()
@@ -137,6 +139,8 @@ def svn_logs(repo_id: int, direction: str):
         last_rev=last_rev,
         direction=direction,
         session_msg=session_msg,
+        available_paths=available_paths,
+        specific_path=specific_path,
     )
 
 # AJAX Views

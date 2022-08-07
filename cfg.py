@@ -38,14 +38,18 @@ def create_repo(name, path, cache_logs):
         repo_queries.create_repo(conn, name, path, cache_logs)
     return load_repos()
 
-def get_cached_logs(repo_id, start_rev, end_rev=None):
+def get_cached_logs(repo_id, start_rev, end_rev=None, path=None):
     conn = get_conn()
     with conn:
         if end_rev:
             logs = log_queries.get_logs(conn, repo_id, start_rev, end_rev)
         else:
             logs = log_queries.get_log(conn, repo_id, start_rev)
-    return [json.loads(l[0]) for l in logs]
+    
+    parsed_logs = [json.loads(l[0]) for l in logs]
+    if path:
+        return [l for l in parsed_logs if path in l]
+    return parsed_logs
 
 def cache_log(repo_id, revision, log_entry):
     conn = get_conn()
