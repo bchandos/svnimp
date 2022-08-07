@@ -128,7 +128,7 @@ def update(repo) -> bool:
     for e in status_update['status']['target']['entry']:
         if e['wc-status']['item'] == 'modified' and e['repos-status']['item'] == 'modified':
             possible_conflicts.append(e['path'])
-    for e in status_update['status']['changelist']['entry']:
+    for e in status_update['status'].get('changelist', {}).get('entry', []):
         if e['wc-status']['item'] == 'modified' and e['repos-status']['item'] == 'modified':
             possible_conflicts.append(e['path'])
     if not possible_conflicts:
