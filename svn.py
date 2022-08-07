@@ -15,7 +15,6 @@ def run_xml_cmd(repo: str, args: tuple, list_elems=tuple()) -> dict:
     newargs = args + ('--xml',)
     # Elements that we always want to be list/array type, 
     # regardless of how many child elements they have
-    print('>>>', newargs)
     p = subprocess.run(newargs, stdout=subprocess.PIPE, timeout=10)
     try:
         d = xml_to_dict(ET.XML(p.stdout))
@@ -29,7 +28,6 @@ def run_xml_cmd(repo: str, args: tuple, list_elems=tuple()) -> dict:
 def run_standard_cmd(repo: str, args: tuple):
     cwd = os.getcwd()
     os.chdir(repo)
-    print('>>>', args)
     p = subprocess.run(args, stdout=subprocess.PIPE, timeout=10)
     res = p.stdout
     os.chdir(cwd)
