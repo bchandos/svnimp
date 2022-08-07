@@ -15,6 +15,7 @@
   - Using the above, could postpone every conflict, identify and load interactively?
   - For now, just fail if possible conflict exists
 - [ ] Support for `svn relocate`
+- [ ] Add application logging (spec. viewing `svn ...` commands in dev)
 - [x] Get logs for individual path or ~~revision~~
 - [x] Sorting on log page retain URL parameters...
 - [x] Poppers z-index issues
