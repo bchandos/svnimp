@@ -129,6 +129,15 @@ def svn_logs(repo_id: int, direction: str):
     logs = cached_logs + live_logs
     if direction == 'descending':
         logs.reverse()
+
+    direction_url = f'/repo/{repo_id}/logs/{"ascending" if direction=="descending" else "descending"}?'
+    direction_url += f'start={start_rev}'
+    direction_url += f'&end={end_rev}'
+    if single_revision:
+        direction_url += f'&single-revision={single_revision}'
+    if specific_path:
+        direction_url += f'&specific-path={specific_path}'
+    
     return dict(
         name=repo.name,
         repo_id=repo.id,
@@ -138,6 +147,7 @@ def svn_logs(repo_id: int, direction: str):
         end_rev=end_rev,
         last_rev=last_rev,
         direction=direction,
+        direction_url=direction_url,
         session_msg=session_msg,
         available_paths=available_paths,
         specific_path=specific_path,

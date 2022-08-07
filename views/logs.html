@@ -66,10 +66,7 @@ head %} {{ super() }}
       href="/repo/{{repo_id}}/logs/{{direction}}"
       >Clear</a
     >
-    <a
-      class="w3-button w3-teal w3-margin-left"
-      href="/repo/{{repo_id}}/logs/{{'ascending' if direction=='descending' else 'descending'}}"
-    >
+    <a class="w3-button w3-teal w3-margin-left" href="{{direction_url}}">
       {{'Ascending' if direction=='descending' else 'Descending'}}
     </a>
   </form>
