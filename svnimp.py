@@ -21,10 +21,11 @@ session_msg = None
 project_directory = os.getcwd()
 
 ## HELPER FUNCTIONS ##
+
 def get_repo_from_id(repo_id: int):
     return next(x for x in repos if x.id == repo_id)
 
-def get_uq_paths_from_json(json_):
+def get_uq_paths_from_json(json_: dict) -> list:
     paths = json_.get('paths')
     return [unquote(p) for p in paths]
 
@@ -220,8 +221,10 @@ def add_repo():
 def update_repo(repo_id: int):
     """ Update a repo """
     repo = get_repo_from_id(repo_id)
-    update(repo.path)
-
+    update_result = update(repo.path)
+    if not update_result:
+        global session_msg
+        session_msg = 'Possible merge conflicts, update manually until I know how to do that.'
     redirect(bottle.request.get_header('referer', '/'))
 
 @app.post('/revert/<repo_id:int>')
@@ -243,7 +246,6 @@ def revert_paths(repo_id: int):
 def set_session_msg():
     """ Set a session message """
     data = bottle.request.json
-    print('>>>', data)
     global session_msg
     session_msg = data.get('msg')
 

@@ -120,12 +120,22 @@ def get_logs(repo, start_rev, end_rev, paths=tuple()):
         list_elems=('path',)
     ).get('log',{}).get('logentry',[])
 
-def update(repo):
+def update(repo) -> bool:
     # Update the repo, ignoring output
     # First, attempt to detect the possibility of merge conflicts
-    status_update = run_xml_cmd(repo, ('svn', 'status', '-u'))
-    print(status_update)
-    # run_standard_cmd(repo, ('svn', 'up'))
+    possible_conflicts = list()
+    status_update = run_xml_cmd(repo, ('svn', 'status', '-u'), ('entry',))
+    for e in status_update['status']['target']['entry']:
+        if e['wc-status']['item'] == 'modified' and e['repos-status']['item'] == 'modified':
+            possible_conflicts.append(e['path'])
+    for e in status_update['status']['changelist']['entry']:
+        if e['wc-status']['item'] == 'modified' and e['repos-status']['item'] == 'modified':
+            possible_conflicts.append(e['path'])
+    if not possible_conflicts:
+        run_standard_cmd(repo, ('svn', 'up'))
+        return True
+    return False
+
 
 def get_head_revision(repo):
     # Get the true head revision number by parsing svnversion
