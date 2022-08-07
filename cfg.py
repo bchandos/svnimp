@@ -17,12 +17,12 @@ class Repo:
     path: str
     cache_logs: bool
 
-def get_conn():
+def get_conn() -> sqlite3.Connection:
     conn = sqlite3.connect('db.sqlite')
     conn.row_factory = sqlite3.Row
     return conn
 
-def load_repos():
+def load_repos() -> list:
     conn = get_conn()
     with conn:
         repos = [
@@ -32,13 +32,13 @@ def load_repos():
 
     return repos
 
-def create_repo(name, path, cache_logs):
+def create_repo(name: str, path: str, cache_logs: bool) -> list:
     conn = get_conn()
     with conn:
         repo_queries.create_repo(conn, name, path, cache_logs)
     return load_repos()
 
-def get_cached_logs(repo_id, start_rev, end_rev=None, path=None):
+def get_cached_logs(repo_id, start_rev, end_rev=None, path=None) -> list:
     conn = get_conn()
     with conn:
         if end_rev:
