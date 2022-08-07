@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import json
 import sqlite3
+from typing import Optional
 
 import aiosql
 
@@ -38,7 +39,7 @@ def create_repo(name: str, path: str, cache_logs: bool) -> list:
         repo_queries.create_repo(conn, name, path, cache_logs)
     return load_repos()
 
-def get_cached_logs(repo_id, start_rev, end_rev=None, path=None) -> list:
+def get_cached_logs(repo_id: int, start_rev: int, end_rev: Optional[int] = None, path: Optional[str] = None) -> list:
     conn = get_conn()
     with conn:
         if end_rev:
@@ -51,7 +52,7 @@ def get_cached_logs(repo_id, start_rev, end_rev=None, path=None) -> list:
         return [l for l in parsed_logs if path in l]
     return parsed_logs
 
-def cache_log(repo_id, revision, log_entry):
+def cache_log(repo_id: int, revision: int, log_entry: str):
     conn = get_conn()
     with conn:
         try:

@@ -1,3 +1,4 @@
+from optparse import Option
 import subprocess
 import re
 import os
@@ -76,12 +77,12 @@ def process_diffs(diff_string: str) -> list:
             start_idx = idx + 4
             return all_lines[start_idx:]
 
-def add_to_changelist(repo, cl_name, paths):
+def add_to_changelist(repo: str, cl_name: str, paths: list) -> list:
     added = run_standard_cmd(repo, ('svn', 'changelist', cl_name) + tuple(paths))
     idx = 5 + len(cl_name)
     return [p[idx:] for p in added.split('\n') if p]
 
-def remove_from_changelist(repo, paths):
+def remove_from_changelist(repo: str, paths: list) -> list:
     removed = run_standard_cmd(repo, ('svn', 'changelist', '--remove') + tuple(paths))
     lines = [p for p in removed.split('\n') if p]
     m = re.search('D \[(.*)\]', lines[0])
@@ -89,16 +90,16 @@ def remove_from_changelist(repo, paths):
     idx = 5 + len(cl_name)
     return [p[idx:] for p in lines]
 
-def add_paths(repo, paths):
+def add_paths(repo: str, paths: list) -> list:
     # Add a collection of paths to version control
     added = run_standard_cmd(repo, ('svn', 'add') + tuple(paths))
     return [p[10:] for p in added.split('\n') if p]
 
-def commit_paths(repo, paths, commit_msg):
+def commit_paths(repo: str, paths: list, commit_msg: str) -> tuple:
     with NamedTemporaryFile(mode='w+') as tmp:
         tmp.write(commit_msg)
         tmp.seek(0)
-        checked_in = run_standard_cmd(repo, ('svn', 'ci')  + tuple(paths) + ('--file', tmp.name))
+        checked_in = run_standard_cmd(repo, ('svn', 'ci') + tuple(paths) + ('--file', tmp.name))
         lines = [p for p in checked_in.split('\n') if p]
         ci_paths = list()
         for line in lines:
@@ -112,7 +113,7 @@ def commit_paths(repo, paths, commit_msg):
             ci_paths.append(line[14:].strip())
         return (ci_paths, revision)
 
-def get_logs(repo, start_rev, end_rev, path=None):
+def get_logs(repo: str, start_rev: int, end_rev: int, path: Optional[str] = None) -> list:
     # Get logs from SVN
     args = ('svn', 'log', '--verbose') + (f'-r{start_rev}:{end_rev}',)
     if path:
@@ -139,12 +140,12 @@ def update(repo) -> bool:
         return True
     return False
 
-def list_paths(repo: str, revision: int):
+def list_paths(repo: str, revision: int) -> list:
     # Get a list of paths at a given revision
     lists = run_standard_cmd(repo, ('svn', f'-r{revision}', 'ls'))
     return [p for p in lists.split('\n') if p]
 
-def get_head_revision(repo):
+def get_head_revision(repo: str) -> int:
     # Get the true head revision number by parsing svnversion
     args = ('svnversion',)
     cwd = os.getcwd()
@@ -155,7 +156,7 @@ def get_head_revision(repo):
     svn_v = res.split(':')[1] if ':' in res else res
     return int(svn_v.strip().replace('M',''))
 
-def revert(repo, paths):
+def revert(repo: str, paths: list) -> list:
     # Revert paths
     reverted_paths = run_standard_cmd(repo, ('svn', 'revert') + tuple(paths))
     lines = [p for p in reverted_paths.split('\n') if p]

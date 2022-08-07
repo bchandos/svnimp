@@ -29,7 +29,7 @@ def get_uq_paths_from_json(json_: dict) -> list:
     paths = json_.get('paths')
     return [unquote(p) for p in paths]
 
-def dtfmt(val: str):
+def dtfmt(val: str) -> str:
     from_zone = tz.gettz('UTC')
     to_zone = tz.gettz('Pacific/Los_Angeles')
     t = datetime.strptime(val, '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -207,7 +207,7 @@ def commit(repo_id: int):
     """ Commit some paths """
     uq_paths = get_uq_paths_from_json(bottle.request.json)
     data = bottle.request.json
-    commit_msg = data.get('commitMessage')
+    commit_msg: str = data.get('commitMessage', '')
     repo = get_repo_from_id(repo_id)
     processed_paths, revision = commit_paths(repo.path, uq_paths, commit_msg)
     if (set(processed_paths) == set(uq_paths)):
@@ -274,7 +274,7 @@ def images(filepath):
     return static_file(filepath, root="static/images")
 
 @app.get("/static/css/<filepath:re:(.*\.css)>")
-def images(filepath):
+def css(filepath):
     return static_file(filepath, root="static/css")
 
 # Testing
