@@ -125,7 +125,8 @@ def svn_logs(repo_id: int, direction: str):
     else:
         live_logs = get_logs(repo_path, start_rev=start_rev, end_rev=end_rev, path=specific_path)
         cached_logs = list()
-    available_paths = list_paths(repo_path, end_rev)
+    # available_paths = list_paths(repo_path, end_rev)
+    available_paths = list()
     logs = cached_logs + live_logs
     if direction == 'descending':
         logs.reverse()
