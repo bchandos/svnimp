@@ -129,7 +129,7 @@ def update(repo) -> bool:
     # First, attempt to detect the possibility of merge conflicts
     possible_conflicts = list()
     status_update = run_xml_cmd(repo, ('svn', 'status', '-u'), ('entry',))
-    for e in status_update['status']['target']['entry']:
+    for e in status_update['status'].get('target', {}).get('entry', []):
         if e.get('wc-status', {}).get('item') == 'modified' and e.get('repos-status', {}).get('item') == 'modified':
             possible_conflicts.append(e['path'])
     for e in status_update['status'].get('changelist', {}).get('entry', []):
