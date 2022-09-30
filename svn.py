@@ -128,13 +128,15 @@ def update(repo) -> bool:
     # Update the repo, ignoring output
     # First, attempt to detect the possibility of merge conflicts
     possible_conflicts = list()
-    status_update = run_xml_cmd(repo, ('svn', 'status', '-u'), ('entry',))
+    status_update = run_xml_cmd(repo, ('svn', 'status', '-u'), ('changelist', 'entry',))
     for e in status_update['status'].get('target', {}).get('entry', []):
         if e.get('wc-status', {}).get('item') == 'modified' and e.get('repos-status', {}).get('item') == 'modified':
             possible_conflicts.append(e['path'])
-    for e in status_update['status'].get('changelist', {}).get('entry', []):
-        if e.get('wc-status', {}).get('item') == 'modified' and e.get('repos-status', {}).get('item') == 'modified':
-            possible_conflicts.append(e['path'])
+    clists = status_update['status'].get('changelist', [])
+    for clist in clists:
+        for e in clist.get('entry', []):
+            if e.get('wc-status', {}).get('item') == 'modified' and e.get('repos-status', {}).get('item') == 'modified':
+                possible_conflicts.append(e['path'])
     if not possible_conflicts:
         run_standard_cmd(repo, ('svn', 'up'))
         return True
